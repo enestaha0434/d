@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ayarlar</title>
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body data-theme="mist">
+    <main class="page-shell narrow-shell">
+
+      <section class="hero-panel compact">
+        <span class="eyebrow">Ayarlar</span>
+        <h1>Tarayıcı Tercihleri</h1>
+        <p class="hero-text">Arama, güvenlik, gizlilik ve görünüm ayarlarını buradan yönet.</p>
+      </section>
+
+      <section class="content-panel settings-panel">
+
+        <!-- Dil -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Dil / Language</h2><span>Tarayıcı arayüz dili</span></div>
+          <label class="setting-row"><span>Dil seç</span><select id="lang-select"></select></label>
+          <p class="save-note">Dil değişikliği adres çubuğu, butonlar ve iç sayfaları etkiler.</p>
+        </div>
+
+        <!-- Profil -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Profil</h2><span>Ad ve fotoğraf</span></div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div id="profile-photo-wrap" style="position:relative;cursor:pointer" title="Fotoğraf değiştir">
+              <div id="profile-photo-placeholder" class="profile-avatar-placeholder">👤</div>
+              <img id="profile-photo-img" class="profile-avatar" style="display:none" alt="Profil" />
+              <span style="position:absolute;bottom:-2px;right:-2px;background:var(--accent);color:var(--accent-ink);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px">✎</span>
+            </div>
+            <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:6px">
+              <input id="profile-name-input" type="text" placeholder="İsminizi girin…"
+                style="height:32px;padding:0 10px;border:1px solid var(--line-mid);border-radius:8px;background:var(--panel-strong);color:var(--text);font-size:13px;outline:none;width:100%;box-sizing:border-box" />
+              <div style="display:flex;gap:6px">
+                <button id="profile-photo-btn" class="soft-button" type="button" style="font-size:12px">Fotoğraf seç</button>
+                <button id="profile-photo-clear" class="soft-button danger" type="button" style="font-size:12px">Kaldır</button>
+              </div>
+            </div>
+          </div>
+          <input id="profile-photo-file" type="file" accept="image/*" style="display:none" />
+        </div>
+
+        <!-- Görünüm -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Görünüm</h2><span>Tema, font ve kişiselleştirme</span></div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <label class="setting-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+              <span style="font-size:12px;color:var(--text-2)">Tema</span>
+              <select id="theme-select" class="setting-select" style="width:100%"></select>
+            </label>
+            <label class="setting-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+              <span style="font-size:12px;color:var(--text-2)">Yazı tipi</span>
+              <select id="ui-font-select" class="setting-select" style="width:100%"></select>
+            </label>
+            <label class="setting-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+              <span style="font-size:12px;color:var(--text-2)">Yazı boyutu</span>
+              <select id="font-select" class="setting-select" style="width:100%"></select>
+            </label>
+            <label class="setting-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+              <span style="font-size:12px;color:var(--text-2)">Sekme düzeni</span>
+              <select id="tab-layout-select" class="setting-select" style="width:100%"></select>
+            </label>
+          </div>
+
+          <label class="setting-row">
+            <span>Kağıtsı doku yoğunluğu</span>
+            <select id="grain-select" class="setting-select"></select>
+          </label>
+
+          <!-- Arkaplan fotoğrafı -->
+          <div style="margin-top:8px;padding:10px;border:1px solid var(--line-mid);border-radius:10px;background:var(--panel-soft)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <strong style="font-size:13px">Arkaplan fotoğrafı</strong>
+              <div style="display:flex;gap:6px">
+                <button id="bg-photo-btn" class="soft-button" type="button" style="font-size:12px">Fotoğraf seç</button>
+                <button id="bg-photo-clear" class="soft-button danger" type="button" style="font-size:12px">Kaldır</button>
+              </div>
+            </div>
+            <div id="bg-photo-preview" style="width:100%;height:60px;border-radius:8px;background:var(--panel-strong);background-size:cover;background-position:center;border:1px solid var(--line-mid);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-2)">
+              Fotoğraf seçilmedi
+            </div>
+            <input id="bg-photo-file" type="file" accept="image/*" style="display:none" />
+          </div>
+
+          <div class="toggle-grid" style="margin-top:8px">
+            <label class="toggle-row">
+              <div><strong>Tam URL göster</strong><p>Adres çubuğunda https:// dahil tam adresi göster.</p></div>
+              <input id="fullurl-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Yer imi şeridini göster</strong><p>Chrome altındaki hızlı erişim şeridini göster.</p></div>
+              <input id="bmstrip-toggle" type="checkbox" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Arama & Başlangıç -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Arama ve Başlangıç</h2><span>Varsayılan arama motoru ve yeni sekme</span></div>
+          <label class="setting-row"><span>Arama motoru</span><select id="search-select"></select></label>
+          <label class="setting-row"><span>Yeni sekme açılışı</span><select id="startpage-select"></select></label>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div><strong>Sekmeleri geri yükle</strong><p>Tarayıcı kapanınca sekmeleri kaydet, açılışta geri yükle.</p></div>
+              <input id="restore-toggle" type="checkbox" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Performans -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Performans</h2><span>Bellek ve sekme yönetimi</span></div>
+          <label class="setting-row">
+            <span>Sekme uyutma süresi</span>
+            <select id="sleep-select">
+              <option value="0">Devre dışı</option>
+              <option value="10">10 dakika</option>
+              <option value="20">20 dakika (önerilen)</option>
+              <option value="30">30 dakika</option>
+              <option value="60">1 saat</option>
+            </select>
+          </label>
+          <p class="save-note" style="margin-top:0">Arka planda bekleyen sekmeler belirtilen süre sonra uyutulur. Tıklandığında otomatik uyanır.</p>
+        </div>
+
+        <!-- Güvenlik -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Güvenlik</h2><span>Koruma seviyesi ve bağlantı güvenliği</span></div>
+          <label class="setting-row"><span>Güvenlik seviyesi</span><select id="security-select"></select></label>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div><strong>HTTPS only</strong><p>HTTP bağlantıları engeller, mümkünse HTTPS'e yönlendirir.</p></div>
+              <input id="https-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Popup'lara izin ver</strong><p>Yeni pencere açma girişimlerine izin verir.</p></div>
+              <input id="popup-toggle" type="checkbox" />
+            </label>
+          </div>
+        </div>
+
+        <!-- İzinler -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>İzinler</h2><span>Sitelerin erişebileceği özellikler</span></div>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div><strong>Konum</strong><p>Harita ve hava durumu gibi servisler için konum erişimi.</p></div>
+              <input id="location-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Bildirimler</strong><p>Web siteleri tarayıcı bildirimi gönderebilsin.</p></div>
+              <input id="notifications-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Kamera</strong><p>Görüntülü görüşme siteleri için kamera erişimi.</p></div>
+              <input id="camera-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Mikrofon</strong><p>Sesli görüşme ve kayıt için mikrofon erişimi.</p></div>
+              <input id="microphone-toggle" type="checkbox" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Gizlilik -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Gizlilik</h2><span>İzleme ve parmak izi koruması</span></div>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div><strong>Tarayıcı kimliğini gizle</strong><p>Sitelere Chrome 120 gibi görün. Takip zorlaşır.</p></div>
+              <input id="ua-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Referrer gizle</strong><p>Hangi sayfadan geldiğini sitelere gösterme.</p></div>
+              <input id="referrer-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>WebRTC IP koruması</strong><p>Gerçek IP adresinin video/ses araçlarıyla sızmasını engelle.</p></div>
+              <input id="webrtc-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Canvas koruması</strong><p>Canvas tabanlı parmak izi takibini zorlaştırır.</p></div>
+              <input id="canvas-toggle" type="checkbox" />
+            </label>
+            <label class="toggle-row">
+              <div><strong>Otomatik oynatmayı engelle</strong><p>Video ve ses otomatik başlamaz, izin verince oynar.</p></div>
+              <input id="autoplay-toggle" type="checkbox" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Store Şifreleme Durumu -->
+        <section class="content-panel" style="margin-bottom:0;padding:14px 20px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="enc-icon" style="font-size:18px">🔒</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text)" id="enc-label">Store şifreleme kontrol ediliyor…</div>
+              <div style="font-size:11.5px;color:var(--text-2)" id="enc-desc">Tarayıcı verilerinizin şifreleme durumu</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Güvenlik Tarama -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Güvenlik Tarama</h2><span>Phishing ve malware tespiti</span></div>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div>
+                <strong>Güvenlik taramasını etkinleştir</strong>
+                <p>Kural analizi + URLhaus kötü amaçlı yazılım veritabanıyla siteleri otomatik kontrol eder.</p>
+              </div>
+              <input id="safe-check-toggle" type="checkbox" />
+            </label>
+          </div>
+          <div style="margin-top:10px">
+            <label class="setting-row" style="align-items:flex-start;gap:12px">
+              <div style="padding-top:8px">
+                <strong style="font-size:12.5px;display:block;margin-bottom:4px">Google Safe Browsing API Anahtarı</strong>
+                <span style="font-size:11.5px;color:var(--text-2)">İsteğe bağlı. Phishing tespitini önemli ölçüde güçlendirir.</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+                <input id="gsb-api-key" type="password" placeholder="API anahtarını buraya gir…"
+                  style="height:32px;padding:0 10px;border:1px solid var(--line-mid);border-radius:8px;background:var(--panel-strong);color:var(--text);font-size:12.5px;outline:none;width:100%;box-sizing:border-box" />
+                <a href="#" id="gsb-how-link" style="font-size:11.5px;color:var(--accent);text-decoration:none">Nasıl alırım? →</a>
+                <p id="gsb-save-note" class="save-note"></p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Profil Yönetimi -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Profiller</h2><span>Kişisel, iş veya aile profilleri</span></div>
+          <div id="profiles-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input id="new-profile-name" type="text" placeholder="Yeni profil adı…"
+              style="height:32px;padding:0 10px;border:1px solid var(--line-mid);border-radius:8px;background:var(--panel-strong);color:var(--text);font-size:12.5px;outline:none;flex:1;min-width:120px" />
+            <input id="new-profile-color" type="color" value="#4a90b0"
+              style="width:36px;height:32px;border-radius:8px;border:1px solid var(--line-mid);cursor:pointer;background:none;padding:2px" />
+            <button id="create-profile-btn" class="soft-button" type="button">Oluştur</button>
+          </div>
+          <p id="profile-note" class="save-note" style="margin-top:6px"></p>
+        </div>
+
+        <!-- Senkronizasyon -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Yedek & Geri Yükle</h2><span>Yer imleri, şifreler ve ayarlar</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:var(--panel-soft);border-radius:10px;padding:12px;font-size:12.5px;color:var(--text-2);line-height:1.6">
+              Yer imlerini, kısayolları, notları ve ayarları JSON dosyasına dışa aktarır.
+              Şifreleri dahil etmek isteğe bağlıdır — şifreler şifreli olarak yedeklenir.
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer">
+                <input id="sync-include-pw" type="checkbox" />
+                Şifreleri dahil et
+              </label>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button id="sync-export-btn" class="soft-button" type="button">Dışa aktar (Yedekle)</button>
+              <button id="sync-import-merge-btn" class="soft-button" type="button">İçe aktar (Birleştir)</button>
+              <button id="sync-import-replace-btn" class="soft-button danger" type="button">İçe aktar (Üzerine yaz)</button>
+            </div>
+            <p id="sync-note" class="save-note"></p>
+          </div>
+        </div>
+
+        <!-- Reklam Engelleyici -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Reklam Engelleyici</h2><span>EasyList + EasyPrivacy + Türkçe filtre</span></div>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div>
+                <strong>Reklam ve tracker engelleyici</strong>
+                <p>EasyList, EasyPrivacy ve Türkçe reklam filtrelerini kullanır. Sayfa yüklemelerini hızlandırır.</p>
+              </div>
+              <input id="adblock-toggle" type="checkbox" checked />
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+            <span id="adblock-stats" style="font-size:12px;color:var(--text-2)">Yükleniyor…</span>
+            <button id="adblock-refresh-btn" class="soft-button" type="button" style="font-size:12px;padding:4px 12px">Filtreleri güncelle</button>
+          </div>
+        </div>
+
+        <!-- Çeviri Motoru -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Çeviri</h2><span>Sayfa çevirisi için kullanılacak motor</span></div>
+          <div class="setting-row">
+            <label for="translate-engine-select"><strong>Çeviri motoru</strong></label>
+            <select id="translate-engine-select" class="setting-select">
+              <option value="google">Google Translate (Ücretsiz, hızlı)</option>
+              <option value="deepl">DeepL (Yüksek kalite)</option>
+              <option value="libretranslate">LibreTranslate (Açık kaynak)</option>
+            </select>
+          </div>
+          <div class="setting-row" id="libre-url-row" style="display:none">
+            <label for="libre-url-input"><strong>LibreTranslate sunucu URL'i</strong></label>
+            <input id="libre-url-input" type="text" placeholder="https://libretranslate.com"
+              style="flex:1;height:32px;padding:0 10px;border:1px solid var(--line-mid);border-radius:8px;background:var(--panel-strong);color:var(--text);font-size:12.5px;outline:none" />
+          </div>
+          <div class="setting-row">
+            <label for="translate-target-select"><strong>Hedef dil</strong></label>
+            <select id="translate-target-select" class="setting-select">
+              <option value="tr">Türkçe</option>
+              <option value="en">English</option>
+              <option value="de">Deutsch</option>
+              <option value="fr">Français</option>
+              <option value="es">Español</option>
+              <option value="ar">العربية</option>
+              <option value="ja">日本語</option>
+              <option value="zh">中文</option>
+              <option value="ru">Русский</option>
+            </select>
+          </div>
+          <p style="font-size:11.5px;color:var(--text-2);margin-top:6px">
+            LibreTranslate'i kendi sunucunda çalıştırıyorsan URL'ini gir. Kamuya açık sunucular yavaş olabilir.
+          </p>
+        </div>
+
+        <!-- Tor Ağı -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Tor Ağı</h2><span>Anonim gezinme (Tor kurulu olmalı)</span></div>
+          <div class="toggle-grid">
+            <label class="toggle-row">
+              <div>
+                <strong>Tor üzerinden bağlan</strong>
+                <p>Tüm trafik SOCKS5 proxy ile Tor ağına yönlendirilir. Önce <a href="https://www.torproject.org/download/" style="color:var(--accent)">Tor Browser</a> veya Tor servisini başlat.</p>
+              </div>
+              <input id="tor-toggle" type="checkbox" />
+            </label>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <label style="font-size:12px;color:var(--text-2);white-space:nowrap">SOCKS5 adresi:</label>
+            <input id="tor-proxy-input" type="text" placeholder="socks5://127.0.0.1:9050"
+              style="flex:1;height:30px;padding:0 10px;border:1px solid var(--line-mid);border-radius:8px;background:var(--panel-strong);color:var(--text);font-size:12.5px;outline:none;min-width:180px" />
+            <span id="tor-status-badge" style="font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--panel-soft);color:var(--text-2)">Devre dışı</span>
+          </div>
+          <p style="font-size:11px;color:var(--text-2);margin-top:8px;line-height:1.5">
+            ⚠ Tor yalnızca Illumina trafiğini anonimleştirir. Gerçek anonimlik için Tor Browser kullan.
+          </p>
+        </div>
+
+        <!-- Log & Hata Raporu -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Geliştirici & Loglar</h2><span>Hata ayıklama</span></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span style="font-size:12.5px;color:var(--text-2)">Uygulama logları otomatik olarak kaydedilir.</span>
+            <button id="open-log-btn" class="soft-button" type="button">Log dosyasını aç</button>
+          </div>
+        </div>
+
+        <!-- Uzantılar -->
+        <div class="setting-group">
+          <div class="panel-head"><h2>Uzantılar</h2><span>Unpacked Chrome uzantı desteği</span></div>
+          <p style="font-size:12.5px;color:var(--text-2);margin:0 0 10px">
+            Sadece klasör (unpacked) uzantıları desteklenir. Chrome Web Store'dan indirilen .crx dosyaları çalışmaz.
+            <button type="button" id="open-cws-btn" style="border:0;background:none;color:var(--accent);font:inherit;cursor:pointer;padding:0;text-decoration:underline;font-size:12.5px">Chrome Web Store →</button>
+          </p>
+          <div class="extensions-head">
+            <button id="add-extension-button" class="soft-button" type="button">Klasörden ekle</button>
+            <p id="extension-note" class="save-note"></p>
+          </div>
+          <div id="extensions-list" class="extensions-list" style="margin-top:8px"></div>
+        </div>
+
+        <p id="save-note" class="save-note">Değişiklikler otomatik kaydedilir.</p>
+        <p style="text-align:center;margin-top:8px">
+          <a id="open-about-link" href="#" style="font-size:12.5px;color:var(--accent);text-decoration:none">
+            ℹ️ Hakkında &amp; SSS &amp; Özellikler →
+          </a>
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const themeSelect         = document.getElementById("theme-select");
+      const uiFontSelect        = document.getElementById("ui-font-select");
+      const grainSelect         = document.getElementById("grain-select");
+      const tabLayoutSelect     = document.getElementById("tab-layout-select");
+      const bgPhotoBtn          = document.getElementById("bg-photo-btn");
+      const bgPhotoClear        = document.getElementById("bg-photo-clear");
+      const bgPhotoFile         = document.getElementById("bg-photo-file");
+      const bgPhotoPreview      = document.getElementById("bg-photo-preview");
+      const profilePhotoWrap    = document.getElementById("profile-photo-wrap");
+      const profilePhotoImg     = document.getElementById("profile-photo-img");
+      const profilePhotoPlaceholder = document.getElementById("profile-photo-placeholder");
+      const profilePhotoBtn     = document.getElementById("profile-photo-btn");
+      const profilePhotoClear   = document.getElementById("profile-photo-clear");
+      const profilePhotoFile    = document.getElementById("profile-photo-file");
+      const profileNameInput    = document.getElementById("profile-name-input");
+      const fontSelect          = document.getElementById("font-select");
+      const searchSelect        = document.getElementById("search-select");
+      const startpageSelect     = document.getElementById("startpage-select");
+      const securitySelect      = document.getElementById("security-select");
+      const sleepSelect         = document.getElementById("sleep-select");
+      const langSelect          = document.getElementById("lang-select");
+      const restoreToggle       = document.getElementById("restore-toggle");
+      const httpsToggle         = document.getElementById("https-toggle");
+      const popupToggle         = document.getElementById("popup-toggle");
+      const notificationsToggle = document.getElementById("notifications-toggle");
+      const locationToggle      = document.getElementById("location-toggle");
+      const cameraToggle        = document.getElementById("camera-toggle");
+      const microphoneToggle    = document.getElementById("microphone-toggle");
+      const fullurlToggle       = document.getElementById("fullurl-toggle");
+      const bmstripToggle       = document.getElementById("bmstrip-toggle");
+      const addExtBtn           = document.getElementById("add-extension-button");
+      const openCwsBtn          = document.getElementById("open-cws-btn");
+      const extensionsList      = document.getElementById("extensions-list");
+      const extensionNote       = document.getElementById("extension-note");
+      const saveNote            = document.getElementById("save-note");
+      // Profil
+      const profilesList      = document.getElementById("profiles-list");
+      const newProfileName    = document.getElementById("new-profile-name");
+      const newProfileColor   = document.getElementById("new-profile-color");
+      const createProfileBtn  = document.getElementById("create-profile-btn");
+      const profileNote       = document.getElementById("profile-note");
+      // Sync
+      const syncExportBtn         = document.getElementById("sync-export-btn");
+      const syncImportMergeBtn    = document.getElementById("sync-import-merge-btn");
+      const syncImportReplaceBtn  = document.getElementById("sync-import-replace-btn");
+      const syncIncludePw         = document.getElementById("sync-include-pw");
+      const syncNote              = document.getElementById("sync-note");
+      const adblockToggle       = document.getElementById("adblock-toggle");
+      const adblockStats        = document.getElementById("adblock-stats");
+      const adblockRefreshBtn   = document.getElementById("adblock-refresh-btn");
+      const translateEngineSelect = document.getElementById("translate-engine-select");
+      const translateTargetSelect = document.getElementById("translate-target-select");
+      const libreUrlRow         = document.getElementById("libre-url-row");
+      const libreUrlInput       = document.getElementById("libre-url-input");
+      const openLogBtn          = document.getElementById("open-log-btn");
+      const safeCheckToggle     = document.getElementById("safe-check-toggle");
+      const gsbApiKey           = document.getElementById("gsb-api-key");
+      const gsbSaveNote         = document.getElementById("gsb-save-note");
+      const gsbHowLink          = document.getElementById("gsb-how-link");
+      const uaToggle            = document.getElementById("ua-toggle");
+      const referrerToggle      = document.getElementById("referrer-toggle");
+      const webrtcToggle        = document.getElementById("webrtc-toggle");
+      const canvasToggle        = document.getElementById("canvas-toggle");
+      const autoplayToggle      = document.getElementById("autoplay-toggle");
+
+      const SEC_PRESETS={standard:{httpsOnly:false,allowPopups:true},balanced:{httpsOnly:false,allowPopups:false},strict:{httpsOnly:true,allowPopups:false}};
+
+      function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+      function renderOptions(state){
+        const{themes=[],searchEngines=[],securityModes=[],startPageModes=[],fontSizes=[],languages=[]}=state.meta||{};
+        if(!themeSelect.childElementCount) {
+          // Grupla göster
+          const groups = {};
+          themes.forEach(t => { (groups[t.group||"açık"] = groups[t.group||"açık"]||[]).push(t); });
+          themeSelect.innerHTML = Object.entries(groups).map(([g,ts]) =>
+            `<optgroup label="${g==="açık"?"🌤 Açık":"🌙 Koyu"}">${ts.map(t=>`<option value="${t.id}">${t.label}</option>`).join("")}</optgroup>`
+          ).join("");
+        }
+        if(!fontSelect.childElementCount)fontSelect.innerHTML=fontSizes.map(f=>`<option value="${f.id}">${f.label}</option>`).join("");
+        // UI Font select
+        const uiFonts = window.illumina?.uiFonts || [{id:"",label:"Sistem (Varsayılan)"},{id:"inter",label:"Inter"},{id:"nunito",label:"Nunito"},{id:"garamond",label:"EB Garamond"},{id:"lora",label:"Lora"},{id:"merriweather",label:"Merriweather"},{id:"playfair",label:"Playfair Display"},{id:"jetbrains",label:"JetBrains Mono"}];
+        if(uiFontSelect&&!uiFontSelect.childElementCount)uiFontSelect.innerHTML=uiFonts.map(f=>`<option value="${f.id}">${f.label}</option>`).join("");
+        // Grain select
+        const grainLevels = window.illumina?.grainLevels || [{id:"",label:"Kapalı"},{id:"low",label:"Az"},{id:"medium",label:"Orta"},{id:"high",label:"Yoğun"}];
+        if(grainSelect&&!grainSelect.childElementCount)grainSelect.innerHTML=grainLevels.map(g=>`<option value="${g.id}">${g.label}</option>`).join("");
+        // Tab layout select
+        const tabLayouts = window.illumina?.tabLayouts || [{id:"horizontal",label:"Yatay (Varsayılan)"},{id:"vertical",label:"Dikey (Sol panel)"}];
+        if(tabLayoutSelect&&!tabLayoutSelect.childElementCount)tabLayoutSelect.innerHTML=tabLayouts.map(l=>`<option value="${l.id}">${l.label}</option>`).join("");
+        if(!searchSelect.childElementCount)searchSelect.innerHTML=searchEngines.map(e=>`<option value="${e.id}">${e.label}</option>`).join("");
+        if(!startpageSelect.childElementCount)startpageSelect.innerHTML=startPageModes.map(m=>`<option value="${m.id}">${m.label}</option>`).join("");
+        if(!securitySelect.childElementCount)securitySelect.innerHTML=securityModes.map(m=>`<option value="${m.id}">${m.label}</option>`).join("");
+        if(!langSelect.childElementCount&&languages.length)langSelect.innerHTML=languages.map(l=>`<option value="${l.id}">${l.label}</option>`).join("");
+      }
+
+      function renderExtensions(items){
+        if(!items.length){extensionsList.innerHTML='<p class="empty-state">Henüz uzantı yüklenmedi.</p>';return;}
+        extensionsList.innerHTML=items.map(item=>`
+          <div class="extension-row">
+            <div class="extension-copy">
+              <strong>${esc(item.name)} ${item.version?`<span style="font-weight:400;color:var(--text-2);font-size:11px">v${esc(item.version)}</span>`:""}</strong>
+              <span>${esc(item.path)}</span>
+            </div>
+            <button class="soft-button danger" type="button" data-remove="${esc(item.path)}">Kaldır</button>
+          </div>
+        `).join("");
+        extensionsList.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>window.browserPage.send("remove-extension",{path:b.dataset.remove})));
+      }
+
+      function pushSettings(){
+        window.browserPage.send("save-settings",{
+          theme:             themeSelect.value,
+          fontSize:          fontSelect.value,
+          uiFont:            uiFontSelect?.value || "",
+          grainLevel:        grainSelect?.value || "",
+          tabLayout:         tabLayoutSelect?.value || "horizontal",
+          searchEngine:      searchSelect.value,
+          startPageMode:     startpageSelect.value,
+          securityMode:      securitySelect.value,
+          tabSleepMinutes:   parseInt(sleepSelect.value,10)||0,
+          language:          langSelect.value||"tr",
+          restoreTabs:       restoreToggle.checked,
+          httpsOnly:         httpsToggle.checked,
+          allowPopups:       popupToggle.checked,
+          allowNotifications:notificationsToggle.checked,
+          allowLocation:     locationToggle.checked,
+          allowCamera:       cameraToggle.checked,
+          allowMicrophone:   microphoneToggle.checked,
+          showFullUrl:       fullurlToggle.checked,
+          showBookmarkStrip: bmstripToggle.checked,
+          spoofUserAgent:    uaToggle.checked,
+          hideReferrer:      referrerToggle.checked,
+          blockWebRTC:       webrtcToggle.checked,
+          blockCanvas:       canvasToggle.checked,
+          blockAutoplay:     autoplayToggle.checked,
+        });
+        saveNote.textContent="Kaydedildi ✓";
+        setTimeout(()=>{saveNote.textContent="Değişiklikler otomatik kaydedilir.";},1500);
+      }
+
+      securitySelect.addEventListener("change",()=>{
+        const p=SEC_PRESETS[securitySelect.value];
+        if(p){httpsToggle.checked=p.httpsOnly;popupToggle.checked=p.allowPopups;}
+        pushSettings();
+      });
+
+      [themeSelect,fontSelect,uiFontSelect,grainSelect,tabLayoutSelect,
+       searchSelect,startpageSelect,sleepSelect,langSelect,
+       restoreToggle,httpsToggle,popupToggle,notificationsToggle,locationToggle,
+       cameraToggle,microphoneToggle,fullurlToggle,bmstripToggle,
+       uaToggle,referrerToggle,webrtcToggle,canvasToggle,autoplayToggle
+      ].forEach(el=>el?.addEventListener("change",pushSettings));
+
+      // Arkaplan fotoğrafı
+      function readImgAsDataUrl(file, cb) {
+        const r = new FileReader();
+        r.onload = e => cb(e.target.result);
+        r.readAsDataURL(file);
+      }
+      bgPhotoBtn?.addEventListener("click", () => bgPhotoFile?.click());
+      bgPhotoFile?.addEventListener("change", e => {
+        const f = e.target.files[0]; if(!f) return;
+        readImgAsDataUrl(f, async dataUrl => {
+          const r = await window.illumina.bgPhotoSave(dataUrl);
+          if(r.ok) {
+            window.browserPage.send("save-settings", { bgPhotoPath: dataUrl });
+            if(bgPhotoPreview){ bgPhotoPreview.style.backgroundImage=`url("${dataUrl}")`; bgPhotoPreview.textContent=""; }
+          }
+        });
+      });
+      bgPhotoClear?.addEventListener("click", async () => {
+        await window.illumina.bgPhotoClear();
+        window.browserPage.send("save-settings", { bgPhotoPath: "" });
+        if(bgPhotoPreview){ bgPhotoPreview.style.backgroundImage=""; bgPhotoPreview.textContent="Fotoğraf seçilmedi"; }
+      });
+
+      // Profil fotoğrafı
+      function openProfilePhoto() { profilePhotoFile?.click(); }
+      profilePhotoWrap?.addEventListener("click", openProfilePhoto);
+      profilePhotoBtn?.addEventListener("click", openProfilePhoto);
+      profilePhotoFile?.addEventListener("change", e => {
+        const f = e.target.files[0]; if(!f) return;
+        readImgAsDataUrl(f, dataUrl => {
+          window.browserPage.send("save-settings", { profilePhoto: dataUrl });
+          if(profilePhotoImg){ profilePhotoImg.src=dataUrl; profilePhotoImg.style.display="block"; }
+          if(profilePhotoPlaceholder) profilePhotoPlaceholder.style.display="none";
+        });
+      });
+      profilePhotoClear?.addEventListener("click", () => {
+        window.browserPage.send("save-settings", { profilePhoto: "" });
+        if(profilePhotoImg) profilePhotoImg.style.display="none";
+        if(profilePhotoPlaceholder) profilePhotoPlaceholder.style.display="flex";
+      });
+      let _nameTimer;
+      profileNameInput?.addEventListener("input", () => {
+        clearTimeout(_nameTimer);
+        _nameTimer = setTimeout(() => {
+          window.browserPage.send("save-settings", { profileName: profileNameInput.value.trim() });
+        }, 600);
+      });
+
+      // Hakkında sayfası linki
+      document.getElementById("open-about-link")?.addEventListener("click", () => {
+        window.browserPage.send("open-url", { url: window.illumina?.pages?.about, internal: true });
+      });
+
+      // ── AdBlock handler'ları ─────────────────────────────────────────────
+      async function refreshAdBlockStats() {
+        try {
+          const s = await window.illumina.adBlockStatus();
+          if (adblockStats) {
+            if (!s.enabled) {
+              adblockStats.textContent = "Devre dışı";
+            } else if (!s.domains || s.domains === 0) {
+              adblockStats.textContent = "Filtreler yükleniyor… (ilk açılışta ~10 saniye sürer)";
+            } else {
+              adblockStats.textContent = `${s.blocked.toLocaleString()} istek engellendi · ${s.domains.toLocaleString()} domain filtresi yüklü`;
+            }
+          }
+          if (adblockToggle) adblockToggle.checked = Boolean(s.enabled);
+        } catch(e) {
+          if (adblockStats) adblockStats.textContent = "Durum alınamadı";
+        }
+      }
+      refreshAdBlockStats();
+      setTimeout(refreshAdBlockStats, 3500);
+      setTimeout(refreshAdBlockStats, 9000);
+
+      adblockToggle?.addEventListener("change", async () => {
+        await window.illumina.adBlockToggle(adblockToggle.checked);
+        refreshAdBlockStats();
+      });
+      adblockRefreshBtn?.addEventListener("click", async () => {
+        adblockRefreshBtn.disabled = true;
+        adblockRefreshBtn.textContent = "Güncelleniyor…";
+        if (adblockStats) adblockStats.textContent = "Filtreler indiriliyor…";
+        await window.illumina.adBlockRefresh();
+        adblockRefreshBtn.disabled = false;
+        adblockRefreshBtn.textContent = "Filtreleri güncelle";
+        refreshAdBlockStats();
+      });
+
+      // ── Çeviri handler'ları ───────────────────────────────────────────────
+      function toggleLibreRow() {
+        if (libreUrlRow) libreUrlRow.style.display = translateEngineSelect?.value === "libretranslate" ? "flex" : "none";
+      }
+      translateEngineSelect?.addEventListener("change", () => {
+        window.browserPage.send("save-settings", { translateEngine: translateEngineSelect.value });
+        toggleLibreRow();
+      });
+      translateTargetSelect?.addEventListener("change", () => {
+        window.browserPage.send("save-settings", { translateTargetLang: translateTargetSelect.value });
+      });
+      let _libreDebounce;
+      libreUrlInput?.addEventListener("input", () => {
+        clearTimeout(_libreDebounce);
+        _libreDebounce = setTimeout(() => {
+          window.browserPage.send("save-settings", { libreTranslateUrl: libreUrlInput.value.trim() });
+        }, 800);
+      });
+
+      // ── Log butonu ────────────────────────────────────────────────────────
+      document.getElementById("open-log-btn")?.addEventListener("click", () => window.illumina?.logOpen?.());
+
+      // ── Tor handler'ları ────────────────────────────────────────────────────
+      const torToggle      = document.getElementById("tor-toggle");
+      const torProxyInput  = document.getElementById("tor-proxy-input");
+      const torStatusBadge = document.getElementById("tor-status-badge");
+
+      async function refreshTorStatus() {
+        try {
+          const s = await window.illumina?.torStatus?.();
+          if (!s) return;
+          if (torToggle) torToggle.checked = Boolean(s.enabled);
+          if (torProxyInput && !torProxyInput.value) torProxyInput.value = s.proxyUrl || "socks5://127.0.0.1:9050";
+          if (torStatusBadge) {
+            if (!s.enabled) {
+              torStatusBadge.textContent = "Devre dışı";
+              torStatusBadge.style.background = "var(--panel-soft)";
+              torStatusBadge.style.color = "var(--text-2)";
+            } else if (s.connected) {
+              torStatusBadge.textContent = "✓ Bağlı";
+              torStatusBadge.style.background = "rgba(50,180,80,.12)";
+              torStatusBadge.style.color = "#1a9e40";
+            } else {
+              torStatusBadge.textContent = "⚠ Aktif ama bağlantı doğrulanamadı";
+              torStatusBadge.style.background = "rgba(220,140,30,.12)";
+              torStatusBadge.style.color = "#c07800";
+            }
+          }
+        } catch(_) {}
+      }
+      refreshTorStatus();
+
+      torToggle?.addEventListener("change", async () => {
+        if (torToggle.checked) {
+          if (torStatusBadge) { torStatusBadge.textContent = "Bağlanıyor…"; }
+          const r = await window.illumina?.torEnable?.({ proxyUrl: torProxyInput?.value?.trim() || null });
+          if (r?.error && torStatusBadge) torStatusBadge.textContent = "Hata: " + r.error;
+        } else {
+          await window.illumina?.torDisable?.();
+        }
+        refreshTorStatus();
+      });
+
+      let _torDebounce;
+      torProxyInput?.addEventListener("input", () => {
+        clearTimeout(_torDebounce);
+        _torDebounce = setTimeout(async () => {
+          if (torToggle?.checked) {
+            await window.illumina?.torEnable?.({ proxyUrl: torProxyInput.value.trim() });
+          }
+        }, 800);
+      });
+
+      // ── Profil yönetimi ────────────────────────────────────────────────────
+      async function loadProfiles() {
+        if (!profilesList) return;
+        try {
+          const [profiles, activeId] = await Promise.all([
+            window.illumina?.profilesList?.(),
+            window.illumina?.profilesActive?.(),
+          ]);
+          if (!profiles) return;
+          profilesList.innerHTML = "";
+          profiles.forEach(p => {
+            const row = document.createElement("div");
+            row.style.cssText = "display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--panel-soft);border-radius:8px;" + (p.id===activeId ? "border:1px solid var(--accent)" : "border:1px solid transparent");
+            const dot = document.createElement("span");
+            dot.style.cssText = `width:10px;height:10px;border-radius:50%;background:${p.color||"var(--accent)"};flex-shrink:0`;
+            const info = document.createElement("div");
+            info.style.cssText = "flex:1;min-width:0";
+            info.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.name)}${p.id===activeId?'<span style="font-size:10px;color:var(--accent);margin-left:6px;font-weight:400">Aktif</span>':""}</div>`;
+            const switchBtn = document.createElement("button");
+            switchBtn.className = "soft-button"; switchBtn.textContent = "Geç"; switchBtn.style.fontSize = "12px";
+            switchBtn.disabled = p.id === activeId;
+            switchBtn.addEventListener("click", async () => {
+              await window.illumina?.profilesSwitch?.({ id: p.id });
+              profileNote.textContent = p.name + " profiline geçildi.";
+              setTimeout(() => { profileNote.textContent = ""; }, 2000);
+              loadProfiles();
+            });
+            const delBtn = document.createElement("button");
+            delBtn.className = "soft-button danger"; delBtn.textContent = "Sil"; delBtn.style.fontSize = "12px";
+            delBtn.disabled = p.id === "default";
+            delBtn.addEventListener("click", async () => {
+              if (!confirm(`"${p.name}" profilini sil?`)) return;
+              const r = await window.illumina?.profilesDelete?.({ id: p.id });
+              if (r?.error) { profileNote.textContent = "Hata: " + r.error; return; }
+              loadProfiles();
+            });
+            row.append(dot, info, switchBtn, delBtn);
+            profilesList.appendChild(row);
+          });
+        } catch(e) { if(profileNote) profileNote.textContent = "Profiller yüklenemedi."; }
+      }
+      loadProfiles();
+
+      createProfileBtn?.addEventListener("click", async () => {
+        const name = newProfileName?.value.trim();
+        if (!name) { profileNote.textContent = "Profil adı girin."; return; }
+        const color = newProfileColor?.value || "#4a90b0";
+        const r = await window.illumina?.profilesCreate?.({ name, color });
+        if (r?.error) { profileNote.textContent = "Hata: " + r.error; return; }
+        if (newProfileName) newProfileName.value = "";
+        profileNote.textContent = "Profil oluşturuldu: " + name;
+        setTimeout(() => { profileNote.textContent = ""; }, 2000);
+        loadProfiles();
+      });
+      openCwsBtn.addEventListener("click",()=>window.browserPage.send("open-url",{url:"https://chromewebstore.google.com",newTab:true}));
+
+      gsbHowLink.addEventListener("click",e=>{e.preventDefault();window.browserPage.send("open-url",{url:"https://developers.google.com/safe-browsing/v4/get-started",newTab:true});});
+      safeCheckToggle.addEventListener("change",()=>window.browserPage.send("save-settings",{safeCheckEnabled:safeCheckToggle.checked}));
+
+      let gsbTimer=null;
+      gsbApiKey.addEventListener("input",()=>{
+        clearTimeout(gsbTimer);gsbTimer=setTimeout(()=>{
+          window.browserPage.send("save-settings",{safeBrowsingApiKey:gsbApiKey.value.trim()});
+          gsbSaveNote.textContent="API anahtarı kaydedildi.";setTimeout(()=>{gsbSaveNote.textContent="";},1500);
+        },700);
+      });
+
+      // Store şifreleme durumu
+      (async () => {
+        try {
+          const status = await window.browserPage.storeEncryptionStatus?.();
+          const icon  = document.getElementById("enc-icon");
+          const label = document.getElementById("enc-label");
+          const desc  = document.getElementById("enc-desc");
+          if (!status) return;
+          if (status.available && status.encryptedFileExists) {
+            if (icon)  icon.textContent = "🔐";
+            if (label) { label.textContent = "Store şifreli"; label.style.color = "var(--accent)"; }
+            if (desc)  desc.textContent  = "Veriler safeStorage ile şifrelenmiş — bu cihaza özgü";
+          } else if (status.available) {
+            if (icon)  icon.textContent = "🔒";
+            if (label) label.textContent = "Şifreleme hazır, bir sonraki kayıtta aktif olur";
+            if (desc)  desc.textContent  = "Ayar kaydettiğinde otomatik şifreleme başlar";
+          } else if (status.devMode) {
+            if (icon)  icon.textContent = "🔧";
+            if (label) label.textContent = "Geliştirme modu — şifreleme devre dışı";
+            if (desc)  desc.textContent  = "npm run build ile .exe aldığında otomatik aktif olur";
+          } else {
+            if (icon)  icon.textContent = "⚠️";
+            if (label) { label.textContent = "Şifreleme kullanılamıyor"; label.style.color = "#d97706"; }
+            if (desc)  desc.textContent  = status.note || "Platform safeStorage desteği yok";
+          }
+        } catch(_) {}
+      })();
+
+      window.browserPage.onState(state=>{
+        document.body.dataset.theme=state.theme||"mist";
+        renderOptions(state);
+        renderExtensions(state.meta?.extensions||[]);
+
+        themeSelect.value        =state.settings?.theme||"mist";
+        fontSelect.value         =state.settings?.fontSize||"medium";
+        if(uiFontSelect)uiFontSelect.value      =state.settings?.uiFont||"";
+        if(grainSelect)grainSelect.value        =state.settings?.grainLevel||"";
+        if(tabLayoutSelect)tabLayoutSelect.value=state.settings?.tabLayout||"horizontal";
+        // Çeviri
+        if(translateEngineSelect) {
+          translateEngineSelect.value = state.settings?.translateEngine || "google";
+          toggleLibreRow();
+        }
+        if(translateTargetSelect) translateTargetSelect.value = state.settings?.translateTargetLang || "tr";
+        if(libreUrlInput) libreUrlInput.value = state.settings?.libreTranslateUrl || "https://libretranslate.com";
+        // Profil fotoğrafı
+        const pp = state.settings?.profilePhoto;
+        if(pp && profilePhotoImg){ profilePhotoImg.src=pp; profilePhotoImg.style.display="block"; if(profilePhotoPlaceholder)profilePhotoPlaceholder.style.display="none"; }
+        else if(profilePhotoImg){ profilePhotoImg.style.display="none"; if(profilePhotoPlaceholder)profilePhotoPlaceholder.style.display="flex"; }
+        if(profileNameInput)profileNameInput.value=state.settings?.profileName||"";
+        // Arkaplan fotoğrafı önizleme
+        const bgp = state.settings?.bgPhotoPath;
+        if(bgp && bgPhotoPreview) {
+          bgPhotoPreview.style.backgroundImage = `url("${bgp}")`;
+          bgPhotoPreview.textContent = "";
+          bgPhotoPreview.style.color = "transparent";
+        } else if(bgPhotoPreview) {
+          bgPhotoPreview.style.backgroundImage = "";
+          bgPhotoPreview.textContent = "Fotoğraf seçilmedi";
+          bgPhotoPreview.style.color = "";
+        }
+        searchSelect.value       =state.settings?.searchEngine||"google";
+        startpageSelect.value    =state.settings?.startPageMode||"welcome";
+        securitySelect.value     =state.settings?.securityMode||"standard";
+        sleepSelect.value        =String(state.settings?.tabSleepMinutes??20);
+        langSelect.value         =state.settings?.language||"tr";
+
+        restoreToggle.checked    =state.settings?.restoreTabs!==false;
+        httpsToggle.checked      =Boolean(state.settings?.httpsOnly);
+        popupToggle.checked      =state.settings?.allowPopups!==false;
+        notificationsToggle.checked=Boolean(state.settings?.allowNotifications);
+        locationToggle.checked   =Boolean(state.settings?.allowLocation);
+        cameraToggle.checked     =Boolean(state.settings?.allowCamera);
+        microphoneToggle.checked =Boolean(state.settings?.allowMicrophone);
+        fullurlToggle.checked    =Boolean(state.settings?.showFullUrl);
+        bmstripToggle.checked    =state.settings?.showBookmarkStrip!==false;
+        uaToggle.checked         =Boolean(state.settings?.spoofUserAgent);
+        referrerToggle.checked   =Boolean(state.settings?.hideReferrer);
+        webrtcToggle.checked     =Boolean(state.settings?.blockWebRTC);
+        canvasToggle.checked     =Boolean(state.settings?.blockCanvas);
+        autoplayToggle.checked   =Boolean(state.settings?.blockAutoplay);
+
+        safeCheckToggle.checked  =state.settings?.safeCheckEnabled!==false;
+          // AdBlock
+          if (adblockToggle) adblockToggle.checked = state.settings?.adBlockEnabled !== false;
+          // Çeviri
+          if (translateEngineSelect) {
+            translateEngineSelect.value = state.settings?.translateEngine || "google";
+            toggleLibreRow();
+          }
+          if (translateTargetSelect) translateTargetSelect.value = state.settings?.translateTargetLang || "tr";
+          if (libreUrlInput) libreUrlInput.value = state.settings?.libreTranslateUrl || "https://libretranslate.com";
+        extensionNote.textContent=state.meta?.extensionNotice||"";
+        extensionNote.dataset.tone=state.meta?.extensionNoticeTone||"muted";
+
+        if(document.activeElement!==gsbApiKey){
+          gsbApiKey.value=state.settings?.safeBrowsingApiKey
+            ?"•".repeat(Math.min(state.settings.safeBrowsingApiKey.length,32)):"";
+        }
+      });
+    </script>
+  </body>
+</html>

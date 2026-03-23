@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illumina Hakkında</title>
+  <link rel="stylesheet" href="page.css" />
+  <style>
+    .tab-nav { display:flex; gap:4px; border-bottom:1px solid var(--line-mid); margin-bottom:20px; padding-bottom:0; }
+    .tab-btn { padding:8px 18px; border:none; background:none; color:var(--text-2); font-size:13px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; border-radius:8px 8px 0 0; transition:color .15s,background .15s; }
+    .tab-btn:hover { color:var(--text); background:var(--panel-soft); }
+    .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* Hakkında */
+    .about-hero { display:flex; align-items:center; gap:20px; margin-bottom:28px; }
+    .about-logo { width:72px; height:72px; border-radius:18px; }
+    .about-title { font-size:28px; font-weight:600; color:var(--text); }
+    .about-ver { font-size:13px; color:var(--text-2); margin-top:4px; }
+    .about-desc { font-size:14px; color:var(--text-2); line-height:1.8; margin-bottom:20px; }
+    .about-links { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+    .about-link { padding:7px 16px; border-radius:8px; background:var(--panel-soft); border:1px solid var(--line-mid); color:var(--accent); font-size:12.5px; text-decoration:none; cursor:pointer; }
+    .about-link:hover { background:var(--accent-soft); }
+    .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .stat-card { background:var(--panel-soft); border:1px solid var(--line-mid); border-radius:10px; padding:14px; text-align:center; }
+    .stat-val { font-size:22px; font-weight:600; color:var(--accent); }
+    .stat-lbl { font-size:11px; color:var(--text-2); margin-top:3px; }
+
+    /* Özellikler */
+    .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .feature-card { background:var(--panel-soft); border:1px solid var(--line-mid); border-radius:10px; padding:14px 16px; }
+    .feature-icon { font-size:22px; margin-bottom:8px; }
+    .feature-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+    .feature-desc { font-size:12px; color:var(--text-2); line-height:1.6; }
+    .badge-new { display:inline-block; font-size:9px; font-weight:700; background:var(--accent-soft); color:var(--accent); border-radius:4px; padding:1px 5px; margin-left:6px; vertical-align:middle; text-transform:uppercase; }
+
+    /* SSS */
+    .faq-item { border:1px solid var(--line-mid); border-radius:10px; margin-bottom:8px; overflow:hidden; }
+    .faq-q { width:100%; background:none; border:none; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-size:13px; font-weight:500; color:var(--text); text-align:left; }
+    .faq-q:hover { background:var(--panel-soft); }
+    .faq-q .arrow { transition:transform .2s; color:var(--text-2); font-size:11px; }
+    .faq-item.open .faq-q .arrow { transform:rotate(180deg); }
+    .faq-a { display:none; padding:0 16px 14px; font-size:13px; color:var(--text-2); line-height:1.7; }
+    .faq-item.open .faq-a { display:block; }
+    .faq-a code { background:var(--panel-strong); padding:1px 5px; border-radius:4px; font-size:12px; color:var(--accent); }
+
+    /* Güncelleme */
+    .update-card { background:var(--panel-soft); border:1px solid var(--line-mid); border-radius:12px; padding:20px; text-align:center; }
+    .update-status { font-size:15px; font-weight:500; color:var(--text); margin-bottom:8px; }
+    .update-sub { font-size:13px; color:var(--text-2); margin-bottom:16px; }
+  </style>
+</head>
+<body data-theme="mist">
+<main class="page-shell narrow-shell">
+  <section class="hero-panel compact">
+    <div class="panel-head">
+      <div><span class="eyebrow">Illumina Browser</span><h1>Bilgi & Yardım</h1></div>
+    </div>
+  </section>
+
+  <section class="content-panel">
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="about">Hakkında</button>
+      <button class="tab-btn" data-tab="features">Özellikler</button>
+      <button class="tab-btn" data-tab="faq">Sık Sorulanlar</button>
+      <button class="tab-btn" data-tab="update">Güncelleme</button>
+    </nav>
+
+    <!-- HAKKINDA -->
+    <div class="tab-panel active" id="tab-about">
+      <div class="about-hero">
+        <img src="logo.png" alt="Logo" class="about-logo" onerror="this.style.display='none'" />
+        <div>
+          <div class="about-title">Illumina Browser</div>
+          <div class="about-ver" id="ver-text">Sürüm yükleniyor…</div>
+        </div>
+      </div>
+      <p class="about-desc">
+        Illumina, Electron tabanlı, gizliliğe önem veren, kişiselleştirilebilir bir masaüstü tarayıcıdır.
+        Üç katmanlı güvenlik motoru, dahili reklam engelleyici, sekme yöneticisi, şifre kasası ve
+        onlarca özelleştirme seçeneğiyle günlük kullanım için tasarlanmıştır.
+      </p>
+      <div class="about-links">
+        <a class="about-link" id="open-log-link">📋 Log dosyası</a>
+        <a class="about-link" id="open-data-link">📁 Veri klasörü</a>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val" id="stat-bm">—</div><div class="stat-lbl">Yer imi</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-hist">—</div><div class="stat-lbl">Geçmiş kaydı</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-pw">—</div><div class="stat-lbl">Kaydedilen şifre</div></div>
+      </div>
+      <p style="font-size:11.5px;color:var(--text-2);margin-top:20px;text-align:center">
+        Electron · Chromium · pdf.js · EasyList
+      </p>
+    </div>
+
+    <!-- ÖZELLİKLER -->
+    <div class="tab-panel" id="tab-features">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-name">3 Katmanlı Güvenlik</div>
+          <div class="feature-desc">Kural analizi → URLhaus malware DB → Google Safe Browsing. Her URL üç aşamada taranır.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚫</div>
+          <div class="feature-name">Reklam Engelleyici <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">EasyList + EasyPrivacy + Türkçe filtre. Sayfa yükleme hızını artırır, izlemeyi engeller.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <div class="feature-name">Şifre Kasası</div>
+          <div class="feature-desc">Şifreler safeStorage ile şifrelenmiş saklanır. Otomatik doldurma + domain eşleştirme.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <div class="feature-name">Çoklu Profil <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">Kişisel, iş veya aile için ayrı profiller. Her profil kendi ayar ve verisiyle izole çalışır.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <div class="feature-name">12 Tema + Kağıt Dokusu <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">Mist, Sand, Sepia, Arctic, Rose, Forest, Dusk ve daha fazlası. Kağıtsı grain efekti ayarlanabilir.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <div class="feature-name">PDF Görüntüleyici <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">pdf.js ile tarayıcı içi PDF görüntüleme. Zoom, döndürme, yazdırma ve indirme destekli.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📺</div>
+          <div class="feature-name">PiP Modu <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">Video her zaman üstte küçük pencerede oynar. YouTube, Netflix ve tüm HTML5 videolar desteklenir.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <div class="feature-name">Yedek & Geri Yükleme <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">Yer imleri, şifreler ve ayarları JSON dosyasına aktar. Merge veya üzerine yaz seçeneği.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-name">Çoklu Çeviri Motoru <span class="badge-new">Yeni</span></div>
+          <div class="feature-desc">Google Translate, DeepL veya kendi LibreTranslate sunucunla sayfa çevirisi.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📰</div>
+          <div class="feature-name">Haber & Hava Durumu</div>
+          <div class="feature-desc">Karşılama ekranında gerçek zamanlı haber akışı ve konum bazlı hava durumu.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-name">Sayfada Ara</div>
+          <div class="feature-desc">Ctrl+F ile anlık sayfa içi arama. İleri/geri gezinme ve eşleşme sayacı.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">😴</div>
+          <div class="feature-name">Sekme Uyutma</div>
+          <div class="feature-desc">Uzun süre açık kalan sekmeler belleği serbest bırakmak için otomatik uyutulur.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SSS -->
+    <div class="tab-panel" id="tab-faq">
+      <div id="faq-list"></div>
+    </div>
+
+    <!-- GÜNCELLEME -->
+    <div class="tab-panel" id="tab-update">
+      <div class="update-card">
+        <div class="update-status" id="update-status">Güncelleme durumu kontrol ediliyor…</div>
+        <div class="update-sub" id="update-sub">Mevcut sürüm: <span id="cur-ver">—</span></div>
+        <button id="check-update-btn" class="soft-button" type="button" style="margin:0 auto">Güncellemeleri Kontrol Et</button>
+        <div id="update-actions" style="margin-top:12px;display:none;gap:8px;justify-content:center">
+          <button id="download-update-btn" class="soft-button" type="button">İndir</button>
+          <button id="install-update-btn" class="soft-button" type="button" style="display:none">Yükle & Yeniden Başlat</button>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-2);text-align:center;margin-top:16px">
+        Güncellemeler GitHub Releases üzerinden sunulur. Otomatik kontrol her 4 saatte bir yapılır.
+      </p>
+    </div>
+  </section>
+</main>
+
+<script>
+const FAQS = [
+  { q:"Uzantılar neden çalışmıyor?", a:"Illumina sadece <code>unpacked</code> (klasör) uzantıları destekler. Chrome Web Store'dan .crx olarak indirilen uzantılar doğrudan çalışmaz. Uzantı klasörünü Ayarlar → Uzantılar → 'Klasörden ekle' ile seçin." },
+  { q:"Şifrelerimi nerede saklıyor?", a:"Şifreler sistemin <code>safeStorage</code> API'si ile şifrelenerek <code>store.json</code> dosyasında saklanır. Ham metin olarak görünmez. Log dosyası açık olsa bile şifreler okunamaz." },
+  { q:"Reklam engelleyici her zaman aktif mi?", a:"Varsayılan olarak aktiftir. Ayarlar → Reklam Engelleyici bölümünden kapatabilir ve filtrelemeleri güncelleyebilirsiniz. Filtreler 5 günde bir otomatik güncellenir." },
+  { q:"PiP modu nasıl kullanılır?", a:"Araçlar menüsünden (⋮) <code>PiP</code> butonuna tıklayın. Sayfada video varsa otomatik olarak küçük pencerede açılır. Pencereyi sürükleyebilir, boyutlandırabilirsiniz." },
+  { q:"Yedek dosyası nereye kaydediliyor?", a:"Ayarlar → Yedek & Geri Yükle → 'Dışa aktar' dediğinizde kayıt konumunu siz seçersiniz. Varsayılan olarak İndirilenler klasörü önerilir." },
+  { q:"Profili silersem verilerim gider mi?", a:"Evet, profil silindiğinde o profile ait tüm veriler (yer imleri, geçmiş, şifreler) kalıcı olarak silinir. Önce Yedek & Geri Yükle ile dışa aktarmanızı öneririz." },
+  { q:"Tema değiştirince neden bazı sayfalar garip görünüyor?", a:"Temalar tarayıcı arayüzünü etkiler, web sayfalarının görünümünü değil. Web sayfaları kendi CSS'lerini kullanır. Sayfa renklerini değiştirmek için Okuma Modunu kullanabilirsiniz." },
+  { q:"Dikey sekme nasıl aktif edilir?", a:"Ayarlar → Görünüm → Sekme Düzeni → 'Dikey (Sol panel)' seçin. Değişiklik hemen uygulanır." },
+  { q:"Google Safe Browsing API anahtarını nereden alırım?", a:"Google Cloud Console'dan SafeBrowsing API'yi etkinleştirip API key oluşturabilirsiniz. Ayarlar → Güvenlik Tarama bölümüne yapıştırın." },
+  { q:"Senkronizasyon çevrimiçi çalışıyor mu?", a:"Hayır, şu an sadece manuel export/import destekleniyor. JSON dosyasını kendiniz taşıyabilirsiniz. Bulut senkronizasyonu ilerleyen sürümlerde planlanıyor." },
+  { q:"Gizli sekme gerçekten gizli mi?", a:"Gizli sekme yerel geçmiş ve çerez kaydetmez, ayrı bir partition kullanır. Ancak ağ trafiği ISP veya sistem yöneticisi tarafından görülebilir — tam anonimlik için VPN gerekir." },
+  { q:"Log dosyası nerede?", a:"Ayarlar → Geliştirici & Loglar → 'Log dosyasını aç' butonuyla erişebilirsiniz. Dosya kullanıcı veri klasöründe <code>illumina.log</code> adıyla saklanır." },
+];
+
+// Sekme mantığı
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab)?.classList.add('active');
+  });
+});
+
+// SSS render
+const faqList = document.getElementById('faq-list');
+FAQS.forEach(f => {
+  const item = document.createElement('div');
+  item.className = 'faq-item';
+  item.innerHTML = `<button class="faq-q" type="button"><span>${f.q}</span><span class="arrow">▾</span></button><div class="faq-a">${f.a}</div>`;
+  item.querySelector('.faq-q').addEventListener('click', () => item.classList.toggle('open'));
+  faqList.appendChild(item);
+});
+
+// State geldiğinde güncelle
+window.browserPage?.onState(state => {
+  document.body.dataset.theme = state.theme || 'mist';
+  document.getElementById('ver-text').textContent = 'Sürüm ' + (window.illumina?.appVersion || '4.0.0');
+  document.getElementById('cur-ver').textContent  = window.illumina?.appVersion || '4.0.0';
+  const st = state.store || {};
+  document.getElementById('stat-bm').textContent   = (st.bookmarks?.length  || 0).toLocaleString('tr');
+  document.getElementById('stat-hist').textContent = (st.history?.length    || 0).toLocaleString('tr');
+  document.getElementById('stat-pw').textContent   = (st.passwords?.length  || 0).toLocaleString('tr');
+});
+
+// Log aç
+document.getElementById('open-log-link')?.addEventListener('click', () => window.illumina?.logOpen());
+
+// Güncelleme
+const checkBtn    = document.getElementById('check-update-btn');
+const dlBtn       = document.getElementById('download-update-btn');
+const installBtn  = document.getElementById('install-update-btn');
+const updateStatus= document.getElementById('update-status');
+const updateSub   = document.getElementById('update-sub');
+const updateActions = document.getElementById('update-actions');
+
+checkBtn?.addEventListener('click', async () => {
+  checkBtn.disabled = true;
+  updateStatus.textContent = 'Kontrol ediliyor…';
+  const r = await window.illumina?.updaterCheck?.();
+  checkBtn.disabled = false;
+  if (!r || r.error) {
+    updateStatus.textContent = r?.error?.includes('geliştirme') ? 'Geliştirme modunda güncelleme kontrolü yapılamaz' : (r?.error || 'Bağlantı hatası');
+    return;
+  }
+  if (r.version) {
+    updateStatus.textContent = `Yeni sürüm mevcut: ${r.version}`;
+    updateActions.style.display = 'flex';
+  } else {
+    updateStatus.textContent = 'En güncel sürümü kullanıyorsunuz ✓';
+  }
+});
+
+dlBtn?.addEventListener('click', async () => {
+  dlBtn.disabled = true;
+  updateStatus.textContent = 'İndiriliyor…';
+  await window.illumina?.updaterDownload?.();
+});
+
+installBtn?.addEventListener('click', () => window.illumina?.updaterInstall?.());
+
+window.illumina?.onUpdaterAvailable?.(info => {
+  updateStatus.textContent = `Yeni sürüm: ${info.version}`;
+  updateActions.style.display = 'flex';
+});
+window.illumina?.onUpdaterDownloaded?.(info => {
+  updateStatus.textContent = `Sürüm ${info.version} indirildi`;
+  installBtn.style.display = 'inline-flex';
+});
+</script>
+</body>
+</html>

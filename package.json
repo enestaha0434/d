@@ -1,0 +1,71 @@
+{
+  "name": "illumina-browser",
+  "version": "4.1.0",
+  "description": "A calm everyday browser built with Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder -w",
+    "build:mac": "electron-builder -m",
+    "build:linux": "electron-builder -l"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^25.0.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.7",
+    "keytar": "^7.9.0"
+  },
+  "build": {
+    "appId": "com.illumina.browser",
+    "productName": "Illumina Browser",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "webview-preload.js",
+      "renderer.js",
+      "config.js",
+      "index.html",
+      "welcome.html",
+      "settings.html",
+      "history.html",
+      "downloads.html",
+      "style.css",
+      "page.css",
+      "logo.png",
+      "package.json",
+      "safety_engine.js",
+      "pdf.html",
+      "about.html",
+      "theme.js",
+      "panels.js",
+      "ui_command.js",
+      "tabs.js",
+      "research.js",
+      "polish.js"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "Illumina-Browser-${version}.exe"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "YOUR_GITHUB_USERNAME",
+      "repo": "illumina-browser"
+    }
+  }
+}

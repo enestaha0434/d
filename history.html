@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geçmiş</title>
+    <link rel="stylesheet" href="page.css" />
+    <style>
+      .search-bar { display:flex;gap:8px;margin-bottom:14px; }
+      .search-bar input { flex:1;height:34px;padding:0 12px;border:1px solid var(--line-mid);border-radius:10px;background:var(--panel-strong);color:var(--text);font-size:13px;outline:none; }
+      .search-bar input:focus { border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft); }
+      .history-date-group { font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin:12px 0 6px; }
+      .history-date-group:first-child { margin-top:0; }
+    </style>
+  </head>
+  <body data-theme="mist">
+    <main class="page-shell narrow-shell">
+      <section class="hero-panel compact">
+        <div class="panel-head">
+          <div><span class="eyebrow">Geçmiş</span><h1>Son ziyaretlerin</h1></div>
+          <button id="clear-history-button" class="soft-button danger" type="button">Geçmişi temizle</button>
+        </div>
+        <p class="hero-text">Yakın zamanda açtığın sayfalar burada durur.</p>
+      </section>
+      <section class="content-panel">
+        <div class="search-bar">
+          <input id="search-input" type="text" placeholder="Geçmişte ara…" autocomplete="off" />
+        </div>
+        <div id="history-items" class="history-list"></div>
+      </section>
+    </main>
+    <script>
+      const historyItems = document.getElementById("history-items");
+      const clearBtn     = document.getElementById("clear-history-button");
+      const searchInput  = document.getElementById("search-input");
+      let allItems = [];
+
+      function esc(v) { return String(v||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
+
+      function groupByDate(items) {
+        const groups = {};
+        const today = new Date(); today.setHours(0,0,0,0);
+        const yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
+        items.forEach(item => {
+          const d = new Date(item.visitedAt||0); d.setHours(0,0,0,0);
+          let label;
+          if(d.getTime()===today.getTime()) label="Bugün";
+          else if(d.getTime()===yesterday.getTime()) label="Dün";
+          else label=d.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"});
+          (groups[label]=groups[label]||[]).push(item);
+        });
+        return groups;
+      }
+
+      function render(items) {
+        if (!items.length) { historyItems.innerHTML='<p class="empty-state">Sonuç bulunamadı.</p>'; return; }
+        const groups = groupByDate(items);
+        let html = "";
+        for (const [label, grp] of Object.entries(groups)) {
+          html += `<div class="history-date-group">${esc(label)}</div>`;
+          html += grp.map(item=>`
+            <button class="list-row" type="button" data-url="${esc(item.url)}">
+              <div class="list-row-content">
+                <strong>${esc(item.title||item.url)}</strong>
+                <span>${esc(item.url.replace(/^https?:\/\//,""))}</span>
+              </div>
+            </button>
+          `).join("");
+        }
+        historyItems.innerHTML = html;
+        historyItems.querySelectorAll("[data-url]").forEach(b=>b.addEventListener("click",()=>window.browserPage.send("open-url",{url:b.dataset.url})));
+      }
+
+      searchInput.addEventListener("input", () => {
+        const q = searchInput.value.toLowerCase();
+        render(q ? allItems.filter(i=>(i.title||"").toLowerCase().includes(q)||(i.url||"").toLowerCase().includes(q)) : allItems);
+      });
+
+      clearBtn.addEventListener("click",()=>window.browserPage.send("clear-history"));
+
+      window.browserPage.onState(state=>{
+        document.body.dataset.theme=state.theme||"mist";
+        allItems=state.history||[];
+        const q=searchInput.value.toLowerCase();
+        render(q?allItems.filter(i=>(i.title||"").toLowerCase().includes(q)||(i.url||"").toLowerCase().includes(q)):allItems);
+      });
+    </script>
+  </body>
+</html>

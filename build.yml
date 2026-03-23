@@ -1,0 +1,79 @@
+name: Illumina Browser — Otomatik Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'           # v4.1.0 gibi tag'lerde tetikle
+  schedule:
+    - cron: '0 3 * * 1' # Her pazartesi 03:00 UTC — haftalık otomatik build
+  workflow_dispatch:    # Manuel tetikleme butonu
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Bağımlılıkları yükle
+        run: npm ci
+
+      - name: Windows build (.exe)
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Artifact yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: illumina-windows
+          path: dist/*.exe
+          retention-days: 30
+
+  release:
+    needs: build-windows
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Artifact indir
+        uses: actions/download-artifact@v4
+        with:
+          name: illumina-windows
+          path: dist/
+
+      - name: GitHub Release oluştur
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-outdated-electron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Electron versiyonu kontrol et
+        run: |
+          CURRENT=$(node -e "console.log(require('./package.json').devDependencies.electron)")
+          LATEST=$(npm view electron version)
+          echo "Mevcut: $CURRENT"
+          echo "Güncel: $LATEST"
+          if [ "$CURRENT" != "^$LATEST" ]; then
+            echo "::warning::Electron güncellemesi mevcut: $CURRENT → $LATEST"
+          fi

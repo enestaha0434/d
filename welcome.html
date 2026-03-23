@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karşılama</title>
+  <link rel="stylesheet" href="page.css" />
+  <style>
+    /* ══ Layout ══════════════════════════════════════════════════════════ */
+    body { overflow-x: hidden; animation: wFadeIn 120ms ease both; }
+    @keyframes wFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .welcome-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ══ Hero — saat, profil, arama ═════════════════════════════════════ */
+    .hero {
+      padding: 48px 48px 32px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+      position: relative;
+    }
+
+    /* Profil satırı */
+    .profile-row {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    }
+    .profile-avatar-wrap { position: relative; cursor: pointer; }
+    .profile-avatar-img {
+      width: 52px; height: 52px; border-radius: 50%;
+      object-fit: cover; border: 2px solid var(--line-mid);
+      display: block;
+    }
+    .profile-avatar-default {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent-soft); border: 2px solid var(--line-mid);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: var(--accent);
+    }
+    .profile-name { font-size: 15px; font-weight: 500; color: var(--text); }
+    .profile-greeting { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+
+    /* Saat */
+    .hero-clock {
+      font-size: clamp(52px, 10vw, 88px);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-date {
+      font-size: 14px; color: var(--text-2);
+      margin-top: 6px; font-weight: 400;
+    }
+
+    /* Hava durumu pill */
+    .weather-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 12px; padding: 5px 14px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      font-size: 13px; color: var(--text-2);
+      transition: background .15s;
+    }
+    .weather-pill:hover { background: var(--panel-strong); }
+    .weather-temp { font-weight: 600; color: var(--text); }
+
+    /* Arama */
+    .search-wrap {
+      margin-top: 28px; width: 100%; max-width: 540px;
+    }
+    .search-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--panel); border: 1.5px solid var(--line-mid);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .search-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft), 0 2px 12px rgba(0,0,0,.06);
+    }
+    .search-bar input {
+      flex: 1; height: 46px; padding: 0 18px;
+      border: 0; background: transparent;
+      color: var(--text); font-size: 14px; outline: none;
+    }
+    .search-bar input::placeholder { color: var(--text-2); }
+    .search-bar button {
+      height: 46px; padding: 0 18px;
+      border: 0; border-left: 1px solid var(--line-mid);
+      background: transparent; color: var(--accent);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background .12s;
+    }
+    .search-bar button:hover { background: var(--accent-soft); }
+
+    /* Hızlı linkler */
+    .quick-links {
+      display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
+    }
+    .quick-link {
+      padding: 5px 14px; border-radius: 8px;
+      border: 1px solid var(--line-mid);
+      background: transparent; color: var(--text-2);
+      font-size: 12px; cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+    .quick-link:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+
+    /* ══ İki sütun layout ════════════════════════════════════════════════ */
+    .content-cols {
+      flex: 1; display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+    .col-left { padding: 24px 32px 32px; }
+    .col-right { border-left: 1px solid var(--line); padding: 24px 24px 32px; }
+
+    /* ══ Kısayollar ══════════════════════════════════════════════════════ */
+    .section-label {
+      font-size: 10.5px; font-weight: 700; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 8px; margin-bottom: 28px;
+    }
+    .shortcut-card {
+      position: relative; display: flex; flex-direction: column;
+      align-items: center; gap: 7px; padding: 14px 10px;
+      border-radius: 12px; border: 1px solid var(--line-mid);
+      background: var(--panel-soft); cursor: pointer;
+      transition: background .12s, border-color .12s, transform .1s;
+      text-align: center;
+    }
+    .shortcut-card:hover { background: var(--panel); border-color: var(--accent); transform: translateY(-1px); }
+    .shortcut-card img { width: 24px; height: 24px; border-radius: 6px; object-fit: contain; }
+    .shortcut-card strong { font-size: 11.5px; color: var(--text); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shortcut-card span { font-size: 10px; color: var(--text-2); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shortcut-remove {
+      position: absolute; top: 5px; right: 5px;
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 0; background: rgba(180,60,40,.13);
+      color: #c04030; font-size: 11px; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+    }
+    .shortcut-card:hover .shortcut-remove { display: flex; }
+    .shortcut-add-card {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px; padding: 14px 10px;
+      border-radius: 12px; border: 1.5px dashed var(--line-mid);
+      background: transparent; cursor: pointer; color: var(--text-2);
+      font-size: 11.5px; transition: background .12s, border-color .12s, color .12s;
+    }
+    .shortcut-add-card:hover { background: var(--panel-soft); border-color: var(--accent); color: var(--accent); }
+
+    /* ══ Haberler ════════════════════════════════════════════════════════ */
+    .news-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .news-source-select {
+      height: 24px; padding: 0 7px; font-size: 11.5px;
+      border: 1px solid var(--line-mid); border-radius: 7px;
+      background: var(--panel-strong); color: var(--text); outline: none; cursor: pointer;
+    }
+    .refresh-btn {
+      width: 24px; height: 24px; border-radius: 7px;
+      border: 1px solid var(--line-mid); background: var(--panel-soft);
+      color: var(--text-2); cursor: pointer; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .12s;
+    }
+    .refresh-btn:hover { background: var(--panel); color: var(--accent); }
+    .news-item {
+      display: block; width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid transparent; background: transparent;
+      cursor: pointer; text-align: left;
+      transition: background .1s, border-color .1s;
+    }
+    .news-item:hover { background: var(--panel-soft); border-color: var(--line-mid); }
+    .news-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 3px; }
+    .news-meta  { display: flex; gap: 8px; font-size: 11px; color: var(--text-2); margin-top: 4px; }
+    .news-source { font-weight: 600; }
+    .news-desc { font-size: 11.5px; color: var(--text-2); line-height: 1.5; margin-top: 3px; }
+
+    /* ══ Sağ sütun widget'ları ═══════════════════════════════════════════ */
+    .widget { margin-bottom: 20px; }
+    .widget-title { font-size: 10.5px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+
+    /* Geçmiş */
+    .hist-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 0; border-bottom: 1px solid var(--line);
+      cursor: pointer; transition: color .1s;
+    }
+    .hist-item:last-child { border-bottom: 0; }
+    .hist-item:hover .hist-title { color: var(--accent); }
+    .hist-favicon { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+    .hist-title { font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+    .hist-time  { font-size: 10.5px; color: var(--text-2); flex-shrink: 0; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.3);
+      backdrop-filter: blur(4px); display: flex;
+      align-items: center; justify-content: center; z-index: 999;
+      opacity: 0; pointer-events: none; transition: opacity 150ms;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--panel-strong); border: 1px solid var(--line-mid);
+      border-radius: 16px; padding: 24px; width: min(340px,90vw);
+      box-shadow: 0 8px 32px rgba(0,0,0,.16);
+      transform: translateY(8px); transition: transform 150ms;
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-box h3 { font-size: 15px; font-weight: 600; margin: 0 0 16px; }
+    .modal-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .modal-field label { font-size: 12px; color: var(--text-2); }
+    .modal-field input { height: 34px; padding: 0 12px; border: 1px solid var(--line-mid); border-radius: 8px; background: var(--panel); color: var(--text); font-size: 13px; outline: none; }
+    .modal-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+  </style>
+</head>
+<body data-theme="mist">
+
+<!-- Kısayol ekleme modal -->
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Kısayol ekle</h3>
+    <div class="modal-field"><label>Adres</label><input id="modal-url" type="text" placeholder="https://ornek.com" autocomplete="off" /></div>
+    <div class="modal-field"><label>Ad (isteğe bağlı)</label><input id="modal-title" type="text" placeholder="Site adı" /></div>
+    <div class="modal-actions">
+      <button class="soft-button" id="modal-cancel" type="button">İptal</button>
+      <button class="soft-button" id="modal-save" type="button" style="background:var(--accent);color:var(--accent-ink);font-weight:600">Ekle</button>
+    </div>
+  </div>
+</div>
+
+<div class="welcome-wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="profile-row">
+      <div class="profile-avatar-wrap" id="profile-wrap" title="Profili düzenle" onclick="window.browserPage.send('open-page',{page:'settings'})">
+        <img id="profile-img" class="profile-avatar-img" style="display:none" alt="Profil" />
+        <div id="profile-default" class="profile-avatar-default">✦</div>
+      </div>
+      <div>
+        <div class="profile-name" id="profile-name-el">Illumina</div>
+        <div class="profile-greeting" id="profile-greeting">Hoş geldin</div>
+      </div>
+    </div>
+
+    <div class="hero-clock" id="hero-clock">00:00</div>
+    <div class="hero-date" id="hero-date"></div>
+
+    <div id="weather-pill" class="weather-pill">
+      <span id="weather-icon">🌤</span>
+      <span id="weather-text" style="opacity:.6;font-style:italic">Hava durumu alınıyor…</span>
+    </div>
+
+    <div class="search-wrap">
+      <form id="search-form" class="search-bar">
+        <input id="search-input" type="text" placeholder="Ara ya da adres gir…" autocomplete="off" spellcheck="false" />
+        <button type="submit">Git →</button>
+      </form>
+      <div class="quick-links">
+        <button class="quick-link" type="button" data-page="history">Geçmiş</button>
+        <button class="quick-link" type="button" data-page="downloads">İndirmeler</button>
+        <button class="quick-link" type="button" data-page="settings">Ayarlar</button>
+        <button class="quick-link" type="button" data-page="about">Hakkında</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- İKİ SÜTUN -->
+  <div class="content-cols">
+
+    <!-- SOL: Kısayollar + Haberler -->
+    <div class="col-left">
+      <div class="section-label">
+        <span>Hızlı erişim</span>
+        <span id="sc-count" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px"></span>
+      </div>
+      <div id="shortcut-grid" class="shortcut-grid"></div>
+
+      <div class="news-header">
+        <div class="section-label" style="margin-bottom:0">Haberler</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select id="news-source" class="news-source-select"></select>
+          <button id="news-refresh" class="refresh-btn" title="Yenile">↻</button>
+        </div>
+      </div>
+      <div id="news-list"></div>
+    </div>
+
+    <!-- SAĞ: Geçmiş + Yer imleri -->
+    <div class="col-right">
+      <div class="widget">
+        <div class="widget-title">Son ziyaretler</div>
+        <div id="recent-hist"></div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">Son yer imleri</div>
+        <div id="recent-bm"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Util ──────────────────────────────────────────────────────────────────
+function esc(v){ return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function faviconUrl(url){ try{ return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(url).origin)}&sz=32`; }catch(_){ return ""; } }
+function timeAgo(d){
+  if(!d)return"";
+  try{
+    const diff=Date.now()-new Date(d).getTime(), m=Math.floor(diff/60000), h=Math.floor(diff/3600000);
+    if(m<2)return"Az önce"; if(m<60)return m+"dk"; if(h<24)return h+"sa";
+    return new Date(d).toLocaleDateString("tr-TR",{day:"numeric",month:"short"});
+  }catch(_){return"";}
+}
+
+// ── Saat ──────────────────────────────────────────────────────────────────
+const DAYS   = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const clockEl = document.getElementById("hero-clock");
+const dateEl  = document.getElementById("hero-date");
+function updateClock(){
+  const now=new Date(), h=String(now.getHours()).padStart(2,"0"), m=String(now.getMinutes()).padStart(2,"0");
+  clockEl.textContent = h+":"+m;
+  dateEl.textContent  = DAYS[now.getDay()]+", "+now.getDate()+" "+MONTHS[now.getMonth()]+" "+now.getFullYear();
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ── Karşılama mesajı ──────────────────────────────────────────────────────
+function greeting(){
+  const h=new Date().getHours();
+  if(h<6)  return "İyi geceler";
+  if(h<12) return "Günaydın";
+  if(h<17) return "İyi öğleden sonralar";
+  if(h<21) return "İyi akşamlar";
+  return "İyi geceler";
+}
+document.getElementById("profile-greeting").textContent = greeting();
+
+// ── Hava durumu ───────────────────────────────────────────────────────────
+const WMO_ICONS = {0:"☀️",1:"🌤",2:"⛅",3:"☁️",45:"🌫",48:"🌫",51:"🌦",53:"🌦",55:"🌧",61:"🌧",63:"🌧",65:"🌧",71:"🌨",73:"🌨",75:"🌨",80:"🌦",81:"🌧",82:"⛈",95:"⛈",96:"⛈",99:"⛈"};
+const WMO_DESC  = {0:"Açık",1:"Az bulutlu",2:"Parçalı bulutlu",3:"Kapalı",45:"Sisli",48:"Sisli",51:"Çiseleme",53:"Çiseleme",55:"Yoğun çiseleme",61:"Yağmurlu",63:"Yağmurlu",65:"Sağanak",71:"Karlı",73:"Karlı",75:"Yoğun kar",80:"Sağanak",81:"Yağmurlu",82:"Fırtınalı",95:"Gök gürültülü",96:"Gök gürültülü",99:"Dolu"};
+let _weatherDone = false;
+async function loadWeather(){
+  if(_weatherDone)return; _weatherDone=true;
+  try{
+    const geo = await window.browserPage.geoip();
+    if(!geo||geo.error||!geo.latitude)return;
+    const data = await window.browserPage.fetchWeather(geo.latitude, geo.longitude);
+    if(!data||data.error)return;
+    const cw=data.current_weather, t=Math.round(cw.temperature), code=cw.weathercode;
+    document.getElementById("weather-icon").textContent = WMO_ICONS[code]||"🌡";
+    document.getElementById("weather-text").innerHTML = `<span class="weather-temp">${t}°C</span>&nbsp;&nbsp;<span>${WMO_DESC[code]||""}</span>${geo.city?`<span style="margin-left:6px;font-size:11px;opacity:.7">${geo.city}</span>`:""}`;
+    document.getElementById("weather-text").style.cssText="";
+  }catch(_){}
+}
+
+// ── Kısayollar ────────────────────────────────────────────────────────────
+const grid = document.getElementById("shortcut-grid");
+const scCount = document.getElementById("sc-count");
+
+// Modal
+const modalOverlay=document.getElementById("modal-overlay");
+const modalUrl=document.getElementById("modal-url");
+const modalTitle=document.getElementById("modal-title");
+document.getElementById("modal-cancel").addEventListener("click",()=>modalOverlay.classList.remove("open"));
+modalOverlay.addEventListener("click",e=>{if(e.target===modalOverlay)modalOverlay.classList.remove("open");});
+document.getElementById("modal-save").addEventListener("click",()=>{
+  let url=modalUrl.value.trim(); if(!url)return;
+  if(!/^https?:\/\//i.test(url))url="https://"+url;
+  window.browserPage.send("add-shortcut",{url,title:modalTitle.value.trim()||url});
+  modalOverlay.classList.remove("open");
+});
+modalUrl.addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("modal-save").click();});
+
+function renderShortcuts(items){
+  grid.innerHTML="";
+  scCount.textContent = items.length ? `${items.length} kısayol` : "";
+  items.forEach(item=>{
+    const btn=document.createElement("button");
+    btn.className="shortcut-card"; btn.type="button";
+    const fav=faviconUrl(item.url);
+    const del=document.createElement("button");
+    del.className="shortcut-remove"; del.type="button"; del.textContent="×"; del.title="Kaldır";
+    del.addEventListener("click",e=>{e.stopPropagation();window.browserPage.send("remove-shortcut",{id:item.id});});
+    btn.innerHTML=`${fav?`<img src="${esc(fav)}" alt="" onerror="this.style.display='none'" />`:"<span style='font-size:20px'>🌐</span>"}<strong>${esc(item.title||item.url)}</strong>`;
+    btn.appendChild(del);
+    btn.addEventListener("click",()=>window.browserPage.send("open-url",{url:item.url,newTab:false}));
+    grid.appendChild(btn);
+  });
+  const addBtn=document.createElement("button");
+  addBtn.className="shortcut-add-card"; addBtn.type="button";
+  addBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.3"/><path d="M9 5.5v7M5.5 9h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Ekle</span>`;
+  addBtn.addEventListener("click",()=>{modalUrl.value="";modalTitle.value="";modalOverlay.classList.add("open");setTimeout(()=>modalUrl.focus(),60);});
+  grid.appendChild(addBtn);
+}
+
+// ── Son geçmiş ────────────────────────────────────────────────────────────
+function renderRecentHist(items){
+  const el=document.getElementById("recent-hist");
+  if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--text-2)">Henüz geçmiş yok.</p>';return;}
+  el.innerHTML=items.slice(0,7).map(h=>`
+    <div class="hist-item" data-url="${esc(h.url)}">
+      <img class="hist-favicon" src="${esc(faviconUrl(h.url))}" alt="" onerror="this.style.display='none'" />
+      <span class="hist-title">${esc(h.title||h.url)}</span>
+      <span class="hist-time">${timeAgo(h.visitedAt)}</span>
+    </div>
+  `).join("");
+  el.querySelectorAll("[data-url]").forEach(r=>r.addEventListener("click",()=>window.browserPage.send("open-url",{url:r.dataset.url,newTab:false})));
+}
+
+function renderRecentBm(items){
+  const el=document.getElementById("recent-bm");
+  if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--text-2)">Yer imi yok.</p>';return;}
+  el.innerHTML=items.slice(0,5).map(b=>`
+    <div class="hist-item" data-url="${esc(b.url)}">
+      <img class="hist-favicon" src="${esc(faviconUrl(b.url))}" alt="" onerror="this.style.display='none'" />
+      <span class="hist-title">${esc(b.title||b.url)}</span>
+    </div>
+  `).join("");
+  el.querySelectorAll("[data-url]").forEach(r=>r.addEventListener("click",()=>window.browserPage.send("open-url",{url:r.dataset.url,newTab:false})));
+}
+
+// ── Haberler ─────────────────────────────────────────────────────────────
+const newsListEl = document.getElementById("news-list");
+const newsSourceEl = document.getElementById("news-source");
+const newsRefreshEl = document.getElementById("news-refresh");
+let newsLoading = false;
+
+const NEWS_FEEDS = [
+  {id:"all",        label:"Tüm kaynaklar", url:""},
+  {id:"bbc-tr",     label:"BBC Türkçe",    url:"https://feeds.bbci.co.uk/turkish/rss.xml"},
+  {id:"ntv",        label:"NTV",           url:"https://www.ntv.com.tr/son-dakika.rss"},
+  {id:"sozcu",      label:"Sözcü",         url:"https://www.sozcu.com.tr/rss/son-dakika.xml"},
+  {id:"bbc-en",     label:"BBC World",     url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
+  {id:"aljazeera",  label:"Al Jazeera",    url:"https://www.aljazeera.com/xml/rss/all.xml"},
+  {id:"techcrunch", label:"TechCrunch",    url:"https://techcrunch.com/feed/"},
+  {id:"hackernews", label:"Hacker News",   url:"https://hnrss.org/frontpage"},
+];
+newsSourceEl.innerHTML = NEWS_FEEDS.map(s=>`<option value="${s.id}">${s.label}</option>`).join("");
+
+function parseRSS(xml, label){
+  const items=[], re=/<(?:item|entry)[\s>][\s\S]*?<\/(?:item|entry)>/gi; let m;
+  while((m=re.exec(xml))!==null){
+    const b=m[0], get=(...tags)=>{ for(const t of tags){const r=new RegExp(`<${t}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${t}>`,"i");const x=b.match(r);if(x){const v=x[1].replace(/<[^>]+>/g," ").replace(/\s+/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();if(v)return v;}}return"";};
+    const la=b.match(/<link[^>]+href="([^"]+)"/i);
+    const title=get("title"), link=la?la[1]:get("link","guid"), pubDate=get("pubDate","published","updated"), desc=get("description","summary").slice(0,160);
+    if(title&&link&&link.startsWith("http"))items.push({title,link,pubDate,desc,sourceLabel:label});
+    if(items.length>=8)break;
+  }
+  return items;
+}
+
+async function fetchFeed(feed){
+  try{
+    const r=await fetch(feed.url,{headers:{"User-Agent":"Mozilla/5.0"},signal:AbortSignal.timeout(7000)});
+    if(!r.ok)return[];
+    return parseRSS(await r.text(), feed.label);
+  }catch(_){return[];}
+}
+
+async function loadNews(){
+  if(newsLoading)return; newsLoading=true;
+  newsRefreshEl.textContent="…"; newsRefreshEl.disabled=true;
+  newsListEl.innerHTML='<div style="padding:16px;color:var(--text-2);font-size:13px;text-align:center">Yükleniyor…</div>';
+  try{
+    const sid=newsSourceEl.value;
+    let items=[];
+    if(sid==="all"){
+      const all=(await Promise.allSettled(NEWS_FEEDS.filter(f=>f.url).map(f=>fetchFeed(f)))).flatMap(r=>r.status==="fulfilled"?r.value:[]);
+      const seen=new Set(); items=all.filter(i=>{if(seen.has(i.link))return false;seen.add(i.link);return true;});
+      items.sort((a,b)=>(new Date(b.pubDate||0))-(new Date(a.pubDate||0)));
+      items=items.slice(0,20);
+    }else{
+      const f=NEWS_FEEDS.find(x=>x.id===sid);
+      if(f)items=await fetchFeed(f);
+    }
+    if(!items.length){newsListEl.innerHTML='<p style="font-size:13px;color:var(--text-2);padding:8px 0">Haber yüklenemedi.</p>';return;}
+    newsListEl.innerHTML=items.map(n=>`
+      <button class="news-item" type="button" data-url="${esc(n.link)}">
+        <div class="news-title">${esc(n.title)}</div>
+        ${n.desc?`<div class="news-desc">${esc(n.desc)}</div>`:""}
+        <div class="news-meta"><span class="news-source">${esc(n.sourceLabel)}</span><span class="news-time">${timeAgo(n.pubDate)}</span></div>
+      </button>`).join("");
+    newsListEl.querySelectorAll("[data-url]").forEach(b=>b.addEventListener("click",()=>window.browserPage.send("open-url",{url:b.dataset.url,newTab:true})));
+  }finally{
+    newsLoading=false; newsRefreshEl.textContent="↻"; newsRefreshEl.disabled=false;
+  }
+}
+newsSourceEl.addEventListener("change",()=>{newsLoading=false;loadNews();});
+newsRefreshEl.addEventListener("click",()=>{newsLoading=false;loadNews();});
+
+// ── Bağlantılar ───────────────────────────────────────────────────────────
+document.getElementById("search-form").addEventListener("submit",e=>{e.preventDefault();window.browserPage.send("search",{query:document.getElementById("search-input").value});});
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>window.browserPage.send("open-page",{page:b.dataset.page})));
+
+// ── State ─────────────────────────────────────────────────────────────────
+// İlk render — boş verilerle hemen göster (layout shift önleme)
+(function immediateRender() {
+  updateClock();
+  renderShortcuts([]);
+  renderRecentHist([]);
+  renderRecentBm([]);
+})();
+
+let _init = false;
+window.browserPage.onState(state=>{
+  document.body.dataset.theme = state.theme || "mist";
+  // Font
+  if(state.settings?.uiFont) document.body.dataset.uiFont = state.settings.uiFont;
+  // Profil
+  const pp = state.settings?.profilePhoto;
+  const pn = state.settings?.profileName;
+  if(pp){ document.getElementById("profile-img").src=pp; document.getElementById("profile-img").style.display="block"; document.getElementById("profile-default").style.display="none"; }
+  if(pn){ document.getElementById("profile-name-el").textContent = pn; }
+  document.getElementById("profile-greeting").textContent = greeting() + (pn ? `, ${pn.split(" ")[0]}` : "");
+
+  renderShortcuts(state.shortcuts||[]);
+  renderRecentHist(state.history||[]);
+  renderRecentBm((state.bookmarks||[]).slice().reverse());
+
+  if(!_init){
+    _init=true;
+    loadWeather();
+    loadNews();
+  }
+});
+</script>
+</body>
+</html>

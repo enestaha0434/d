@@ -1,0 +1,2696 @@
+/* ─── Illumina Browser — Compact Zen UI ─────────────────────────────────── */
+
+:root {
+  color-scheme: light;
+  --bg:            #e8e2db;
+  --chrome:        rgba(240,236,230,0.88);
+  --chrome-border: rgba(160,140,120,0.18);
+  --panel:         rgba(248,244,238,0.96);
+  --panel-soft:    rgba(255,255,255,0.38);
+  --line:          rgba(140,118,96,0.14);
+  --line-mid:      rgba(140,118,96,0.22);
+  --text:          #1e1510;
+  --text-2:        #6b5b4e;
+  --accent:        #b06a3a;
+  --accent-soft:   rgba(176,106,58,0.12);
+  --accent-ink:    #fff8f2;
+  --shadow-chrome: 0 1px 0 var(--chrome-border), 0 8px 24px rgba(80,50,20,0.08);
+  --shadow-view:   0 0 0 1px var(--line), 0 12px 32px rgba(60,36,12,0.1);
+  --r-tab:         10px;
+  --r-btn:         8px;
+  --r-view:        14px;
+  --h-chrome:      48px;
+  --h-tab:         32px;
+  font-family: -apple-system, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  font-size: var(--fs, 13px);
+}
+
+/* ════ YAZI BOYUTU - data-fontsize attribute ile kontrol edilir ════ */
+:root                          { --fs: 13px; }
+html[data-fontsize="small"]    { --fs: 12px; }
+html[data-fontsize="medium"]   { --fs: 13px; }
+html[data-fontsize="large"]    { --fs: 15px; }
+
+/* body ve tüm child elementler var(--fs) cascade'den alır */
+body { font-size: var(--fs, 13px); }
+
+/* Spesifik UI elementleri - hepsini relative yap */
+.tab-title         { font-size: var(--fs, 13px) !important; }
+.address-input     { font-size: var(--fs, 13px) !important; }
+.bookmark-chip     { font-size: calc(var(--fs, 13px) - 1px) !important; }
+.control-button    { font-size: var(--fs, 13px); }
+.dl-popup-filename { font-size: var(--fs, 13px); }
+
+/* Toolbar separator */
+.toolbar-sep { width:1px; height:16px; background:var(--line-mid); flex-shrink:0; align-self:center; margin:0 2px; }
+
+
+
+
+
+
+body[data-theme="paper"] {
+  --bg: #edeae4;
+  --chrome: rgba(246,244,240,0.92);
+  --chrome-border: rgba(120,116,108,0.16);
+  --panel: rgba(252,251,248,0.96);
+  --panel-soft: rgba(255,255,255,0.5);
+  --line: rgba(100,98,92,0.13);
+  --line-mid: rgba(100,98,92,0.22);
+  --text: #252320;
+  --text-2: #6a6660;
+  --accent: #4e7080;
+  --accent-soft: rgba(78,112,128,0.13);
+  --accent-ink: #f4f8fa;
+}
+
+body[data-theme="night"] {
+  color-scheme: dark;
+  --bg: #111214;
+  --chrome: rgba(20,22,26,0.95);
+  --chrome-border: rgba(255,255,255,0.07);
+  --panel: rgba(22,24,28,0.97);
+  --panel-soft: rgba(255,255,255,0.04);
+  --line: rgba(255,255,255,0.07);
+  --line-mid: rgba(255,255,255,0.12);
+  --text: #e8ecf0;
+  --text-2: #8a9199;
+  --accent: #7ea3c4;
+  --accent-soft: rgba(126,163,196,0.15);
+  --accent-ink: #0b1520;
+  --shadow-chrome: 0 1px 0 var(--chrome-border), 0 8px 24px rgba(0,0,0,0.28);
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(0,0,0,0.32);
+}
+body[data-theme="night"] .view-shell { background: #111214; }
+
+body[data-theme="obsidian"] {
+  color-scheme: dark;
+  --bg: #080a0c;
+  --chrome: rgba(12,14,17,0.98);
+  --chrome-border: rgba(255,255,255,0.06);
+  --panel: rgba(14,16,20,0.99);
+  --panel-soft: rgba(255,255,255,0.03);
+  --line: rgba(255,255,255,0.06);
+  --line-mid: rgba(255,255,255,0.12);
+  --text: #f0f2f5;
+  --text-2: #8b939e;
+  --accent: #c4956a;
+  --accent-soft: rgba(196,149,106,0.14);
+  --accent-ink: #130d07;
+  --shadow-chrome: 0 1px 0 var(--chrome-border), 0 8px 32px rgba(0,0,0,0.44);
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 40px rgba(0,0,0,0.5);
+}
+body[data-theme="obsidian"] .view-shell { background: #080a0c; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TEMA: macOS — Apple vibes, SF Pro feel, frosted clarity
+   ═══════════════════════════════════════════════════════════════ */
+body[data-theme="macos"] {
+  color-scheme: light;
+  --bg:            #d8d8e0;
+  --chrome:        rgba(236,236,240,0.72);
+  --chrome-border: rgba(0,0,0,0.10);
+  --panel:         rgba(248,248,252,0.88);
+  --panel-soft:    rgba(255,255,255,0.52);
+  --line:          rgba(0,0,0,0.08);
+  --line-mid:      rgba(0,0,0,0.13);
+  --text:          #1c1c1e;
+  --text-2:        #6e6e73;
+  --accent:        #0071e3;
+  --accent-soft:   rgba(0,113,227,0.12);
+  --accent-ink:    #ffffff;
+  --shadow-chrome: 0 1px 0 rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-view:   0 0 0 1px rgba(0,0,0,0.08), 0 8px 28px rgba(0,0,0,0.12);
+  --r-tab:         8px;
+  --r-btn:         7px;
+  --r-view:        12px;
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+}
+
+/* macOS — background: soft gradient like macOS Ventura/Sonoma wallpaper */
+body[data-theme="macos"] {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(180,190,230,0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(200,180,230,0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 40%, rgba(160,200,240,0.4) 0%, transparent 50%),
+    linear-gradient(145deg, #cdd0e0, #dcdde8);
+}
+
+/* macOS — chrome: heavy frosted glass */
+body[data-theme="macos"] .chrome-shell {
+  background: rgba(236,236,242,0.75);
+  backdrop-filter: blur(32px) saturate(1.8) brightness(1.05);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8) brightness(1.05);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 6px 22px rgba(0,0,0,0.09);
+}
+
+body[data-theme="macos"] .view-shell {
+  background: #f5f5f7;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.10);
+}
+
+/* macOS — tabs: pill-shaped, very Apple */
+body[data-theme="macos"] .tab-card {
+  border-radius: 8px;
+  background: transparent;
+}
+body[data-theme="macos"] .tab-card.is-active {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(0,0,0,0.10);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+/* macOS — address bar: pill shape */
+body[data-theme="macos"] .address-input {
+  border-radius: 10px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.10);
+}
+body[data-theme="macos"] .address-input:focus {
+  background: rgba(255,255,255,0.95);
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.20);
+}
+
+/* macOS — security badge: Apple system blue */
+body[data-theme="macos"] .security-dot { background: #34c759; }
+body[data-theme="macos"] .security-badge {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* macOS — control buttons: very subtle */
+body[data-theme="macos"] .control-button:hover,
+body[data-theme="macos"] .utility-button:hover {
+  background: rgba(0,0,0,0.06);
+}
+body[data-theme="macos"] .control-button.is-active,
+body[data-theme="macos"] .tab-card.is-active .tab-close:hover {
+  background: rgba(0,113,227,0.12);
+  color: #0071e3;
+}
+
+/* macOS — bookmark strip: thinner, airy */
+body[data-theme="macos"] .bookmark-chip:hover {
+  background: rgba(0,0,0,0.06);
+}
+body[data-theme="macos"] .bookmark-chip.is-active {
+  background: rgba(0,113,227,0.12);
+  color: #0071e3;
+}
+
+/* macOS — new tab button: very soft */
+body[data-theme="macos"] .tab-add-button:hover {
+  background: rgba(0,0,0,0.07);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TEMA: Liquid Glass — iOS 26 vibe, refractive prism, aurora
+   ═══════════════════════════════════════════════════════════════ */
+body[data-theme="liquid"] {
+  color-scheme: dark;
+  --bg:            #08080f;
+  --chrome:        rgba(18,18,28,0.55);
+  --chrome-border: rgba(255,255,255,0.12);
+  --panel:         rgba(22,22,36,0.60);
+  --panel-soft:    rgba(255,255,255,0.06);
+  --line:          rgba(255,255,255,0.09);
+  --line-mid:      rgba(255,255,255,0.15);
+  --text:          #f0f0ff;
+  --text-2:        #9090b8;
+  --accent:        #a78bfa;
+  --accent-soft:   rgba(167,139,250,0.18);
+  --accent-ink:    #0a0814;
+  --shadow-chrome: 0 1px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-view:   0 0 0 1px rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.5);
+  --r-tab:         12px;
+  --r-btn:         10px;
+  --r-view:        16px;
+  font-family: -apple-system, "SF Pro Text", "Segoe UI Variable Text", system-ui, sans-serif;
+}
+
+/* Liquid — background: deep aurora */
+body[data-theme="liquid"] {
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(120,60,220,0.45) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 15%, rgba(20,180,220,0.30) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(180,60,160,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 50%, rgba(60,120,255,0.20) 0%, transparent 40%),
+    linear-gradient(170deg, #070710 0%, #0d0d1a 100%);
+  animation: aurora-shift 14s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-shift {
+  0%   { filter: hue-rotate(0deg)   brightness(1.0); }
+  50%  { filter: hue-rotate(18deg)  brightness(1.05); }
+  100% { filter: hue-rotate(-12deg) brightness(0.97); }
+}
+
+/* Liquid — chrome: pure glass slab */
+body[data-theme="liquid"] .chrome-shell {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(40px) saturate(2.0) brightness(1.1);
+  -webkit-backdrop-filter: blur(40px) saturate(2.0) brightness(1.1);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 8px 32px rgba(0,0,0,0.48);
+}
+
+body[data-theme="liquid"] .view-shell {
+  background: #08080f;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 0 1px rgba(167,139,250,0.08), 0 12px 40px rgba(0,0,0,0.5);
+}
+
+/* Liquid — title row: rainbow shimmer border */
+body[data-theme="liquid"] .title-row {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+}
+body[data-theme="liquid"] .title-row::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(167,139,250,0.6) 20%,
+    rgba(96,165,250,0.6) 40%,
+    rgba(52,211,153,0.5) 60%,
+    rgba(251,191,36,0.5) 80%,
+    transparent 100%
+  );
+  animation: shimmer-move 4s linear infinite;
+}
+@keyframes shimmer-move {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+body[data-theme="liquid"] .toolbar-row {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Liquid — tabs: frosted glass pills */
+body[data-theme="liquid"] .tab-card {
+  border-radius: 12px;
+  background: transparent;
+  border-color: transparent;
+  transition: background 140ms, border-color 140ms, box-shadow 140ms;
+}
+body[data-theme="liquid"] .tab-card:hover {
+  background: rgba(255,255,255,0.06);
+}
+body[data-theme="liquid"] .tab-card.is-active {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 2px 12px rgba(0,0,0,0.30);
+}
+
+/* Liquid — address bar: glass pill */
+body[data-theme="liquid"] .address-input {
+  border-radius: 12px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #f0f0ff;
+}
+body[data-theme="liquid"] .address-input:hover {
+  background: rgba(255,255,255,0.10);
+}
+body[data-theme="liquid"] .address-input:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(167,139,250,0.6);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Liquid — security dot: iridescent */
+body[data-theme="liquid"] .security-dot {
+  background: linear-gradient(135deg, #a78bfa, #60a5fa);
+  box-shadow: 0 0 8px rgba(167,139,250,0.7);
+}
+body[data-theme="liquid"] .security-badge {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Liquid — buttons: glass hover */
+body[data-theme="liquid"] .control-button:hover,
+body[data-theme="liquid"] .tab-add-button:hover,
+body[data-theme="liquid"] .utility-button:hover {
+  background: rgba(255,255,255,0.09);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+body[data-theme="liquid"] .control-button.is-active {
+  background: rgba(167,139,250,0.18);
+  color: #c4b5fd;
+}
+
+/* Liquid — bookmark strip chips */
+body[data-theme="liquid"] .bookmark-chip:hover {
+  background: rgba(255,255,255,0.08);
+}
+body[data-theme="liquid"] .bookmark-chip.is-active {
+  background: rgba(167,139,250,0.18);
+  color: #c4b5fd;
+}
+
+/* Liquid — brand button glow */
+body[data-theme="liquid"] .brand-button:hover {
+  background: rgba(255,255,255,0.06);
+  text-shadow: 0 0 20px rgba(167,139,250,0.5);
+}
+
+/* Liquid — tab spinner: purple */
+body[data-theme="liquid"] .tab-spinner {
+  border-top-color: #a78bfa;
+}
+
+/* Liquid — find bar glass */
+body[data-theme="liquid"] .find-bar {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+}
+
+/* Liquid — notes panel glass */
+body[data-theme="liquid"] .notes-panel {
+  background: rgba(18,18,32,0.80);
+  backdrop-filter: blur(32px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Liquid — downloads popup glass */
+body[data-theme="liquid"] .dl-popup {
+  background: rgba(18,18,32,0.82);
+  backdrop-filter: blur(32px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Liquid — autocomplete glass */
+body[data-theme="liquid"] .autocomplete-list {
+  background: rgba(18,18,32,0.88);
+  backdrop-filter: blur(32px);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%; margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input { font: inherit; color: inherit; }
+
+/* ─── Shell ──────────────────────────────────────────────────── */
+.browser-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  gap: 6px;
+  padding: 8px 10px;
+  position: relative;  /* establish stacking context root */
+  isolation: isolate;  /* create new stacking context */
+}
+
+/* ─── Chrome ─────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ILLUMINA BROWSER — Modern Chrome UI Overrides
+   Mevcut style.css'in üzerine eklenir, tüm eski kuralları ezer.
+   Felsefe: Nefes alan boşluklar, yumuşak geçişler, premium his.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Temel değişkenler ───────────────────────────────────────────────────── */
+:root {
+  --r-tab:        12px;
+  --r-btn:        9px;
+  --r-view:       16px;
+  --h-chrome:     52px;
+  --h-tab:        34px;
+  --h-toolbar:    44px;
+  --transition:   160ms cubic-bezier(.32,.72,0,1);
+}
+
+/* ── Browser shell — daha az padding, daha temiz ────────────────────────── */
+.browser-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 8px 8px 8px;
+  gap: 6px;
+  box-sizing: border-box;
+  background: var(--bg);
+}
+
+/* ── Chrome shell — cam efekti, yuvarlak köşeler ────────────────────────── */
+.chrome-shell {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 16px;
+  background: var(--chrome);
+  border: 1px solid var(--chrome-border);
+  box-shadow: var(--shadow-chrome);
+  backdrop-filter: blur(28px) saturate(1.6);
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Title row — logo + sekmeler + güvenlik ─────────────────────────────── */
+.title-row {
+  display: flex;
+  align-items: center;
+  height: var(--h-chrome);
+  padding: 0 12px 0 8px;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── Brand button — daha zarif ──────────────────────────────────────────── */
+.brand-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px 5px 5px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+.brand-button:hover { background: var(--panel-soft); }
+.brand-logo {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+}
+
+/* ── Tabs row ────────────────────────────────────────────────────────────── */
+.tabs-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 5px 2px;
+}
+.tabs-bar::-webkit-scrollbar { display: none; }
+
+/* ── Tab card — yuvarlak, hafif, modern ─────────────────────────────────── */
+.tab-card {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: var(--h-tab);
+  min-width: 80px;
+  max-width: 196px;
+  padding: 0 9px;
+  border-radius: var(--r-tab);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+.tab-card:hover {
+  background: var(--panel-soft);
+  color: var(--text);
+}
+.tab-card.is-active {
+  background: var(--panel);
+  border-color: var(--line-mid);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 0 0 0.5px var(--line-mid);
+}
+/* Aktif sekme — üstten ince accent çizgisi */
+.tab-card.is-active::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 12px; right: 12px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.tab-favicon {
+  display: grid;
+  place-items: center;
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  overflow: hidden;
+  position: relative;
+}
+.tab-favicon img { width: 14px; height: 14px; border-radius: 3px; }
+
+.tab-copy { flex: 1; min-width: 0; text-align: left; }
+.tab-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.tab-close {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 17px; height: 17px;
+  border-radius: 5px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms, background 100ms, color 100ms;
+}
+.tab-card:hover .tab-close,
+.tab-card.is-active .tab-close { opacity: 0.7; }
+.tab-card:hover .tab-close:hover,
+.tab-card.is-active .tab-close:hover {
+  opacity: 1;
+  background: rgba(180,60,40,.12);
+  color: #c04030;
+}
+
+/* ── New tab button ──────────────────────────────────────────────────────── */
+.tab-add-button {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  margin-left: 2px;
+}
+.tab-add-button:hover { background: var(--panel-soft); color: var(--text); }
+
+/* ── Security badge ──────────────────────────────────────────────────────── */
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.security-badge:hover { background: var(--panel); }
+.security-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── Toolbar row ─────────────────────────────────────────────────────────── */
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 7px;
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-actions, .toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Control buttons ─────────────────────────────────────────────────────── */
+.control-button {
+  display: grid;
+  place-items: center;
+  height: 31px;
+  min-width: 31px;
+  padding: 0 8px;
+  border-radius: var(--r-btn);
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background var(--transition), color var(--transition), transform 80ms;
+  white-space: nowrap;
+}
+.control-button:hover {
+  background: var(--panel-soft);
+  color: var(--text);
+}
+.control-button:active { transform: scale(.93); }
+.control-button:disabled { opacity: 0.28; cursor: default; }
+.control-button:disabled:hover { background: transparent; color: var(--text-2); transform: none; }
+.control-button.is-active { color: var(--accent); background: var(--accent-soft); }
+
+.control-button.toolbar-icon {
+  width: 33px; height: 33px;
+  min-width: 33px;
+  padding: 0;
+  border-radius: 10px;
+}
+.control-button.toolbar-icon svg { display: block; }
+.control-button.toolbar-icon.is-active { color: var(--accent); background: var(--accent-soft); }
+
+#back-button, #forward-button {
+  width: 32px; height: 32px;
+  min-width: 32px; padding: 0;
+}
+#reload-button { width: 32px; height: 32px; min-width: 32px; padding: 0; }
+
+/* ── Address bar ─────────────────────────────────────────────────────────── */
+.address-form { flex: 1; min-width: 0; position: relative; }
+.address-input {
+  width: 100%;
+  height: 31px;
+  padding: 0 14px 0 38px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--panel-soft);
+  color: var(--text);
+  outline: none;
+  font-size: 13px;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition), width var(--transition);
+  box-sizing: border-box;
+}
+.address-input:hover { background: var(--panel); }
+.address-input:focus {
+  background: var(--panel);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── Bookmark strip ──────────────────────────────────────────────────────── */
+.bookmark-strip {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 10px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  min-height: 27px;
+}
+.bookmark-strip::-webkit-scrollbar { display: none; }
+
+.bookmark-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 21px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 11.5px;
+  font-weight: 450;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+.bookmark-chip:hover { background: var(--panel-soft); color: var(--text); }
+.bookmark-chip.is-active { color: var(--accent); background: var(--accent-soft); }
+.bookmark-chip.secondary { color: var(--text-2); font-weight: 500; }
+.bookmark-chip.secondary:hover { color: var(--text); }
+
+/* ── View shell ──────────────────────────────────────────────────────────── */
+.view-shell {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--r-view);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-view);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Toolbar separator ───────────────────────────────────────────────────── */
+.toolbar-sep {
+  width: 1px; height: 15px;
+  background: var(--line-mid);
+  margin: 0 3px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* ── Site info button ────────────────────────────────────────────────────── */
+/* site-info-btn: see chrome overrides section */
+
+/* ── Pinned / sleeping / incognito ───────────────────────────────────────── */
+.tab-card.is-pinned { min-width: 40px !important; max-width: 40px !important; padding: 0 8px; }
+.tab-card.is-pinned .tab-copy { display: none; }
+.tab-card.is-sleeping { opacity: 0.48; }
+.tab-card.is-sleeping .tab-title { font-style: italic; }
+.tab-card.is-incognito { opacity: 0.88; }
+
+/* ── Tab spinner ─────────────────────────────────────────────────────────── */
+.tab-spinner {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--line-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.55s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Tab audio badge ─────────────────────────────────────────────────────── */
+.tab-favicon { position: relative; }
+.tab-audio {
+  position: absolute;
+  bottom: -3px; right: -3px;
+  width: 13px; height: 13px;
+  border-radius: 50%; border: 0;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 100ms;
+}
+.tab-audio:hover { background: var(--accent); color: var(--accent-ink); }
+.tab-audio.is-muted { background: var(--line-mid); color: var(--text-2); }
+
+/* ── Bookmark star fill ──────────────────────────────────────────────────── */
+#bookmark-button.is-active .bookmark-path { fill: var(--accent); stroke: var(--accent); }
+#bookmark-button.is-active svg path { fill: var(--accent); stroke: var(--accent); }
+
+/* ── Focus mode ──────────────────────────────────────────────────────────── */
+.chrome-shell.focus-compact .title-row,
+.chrome-shell.focus-compact .bookmark-strip,
+.chrome-shell.focus-compact .find-bar { display: none !important; }
+.chrome-shell.focus-compact .toolbar-row { padding: 4px 10px 6px; border-bottom: none; }
+.focus-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 4px 10px;
+  background: var(--chrome); border-bottom: 1px solid var(--line);
+  transition: opacity 150ms;
+}
+.focus-bar.is-hidden { display: none; }
+.focus-exit-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 0; border-radius: 8px;
+  background: var(--accent-soft); color: var(--accent);
+  font-size: 12px; padding: 5px 12px; cursor: pointer;
+  transition: background 120ms;
+}
+.focus-exit-btn:hover { background: var(--accent); color: var(--accent-ink); }
+
+/* ── Incognito btn active ────────────────────────────────────────────────── */
+#incognito-btn.is-active { color: #7a6ac4; background: rgba(122,106,196,0.14); }
+[data-page="settings"] svg { overflow: visible; }
+.control-button.toolbar-icon svg { overflow: visible; }
+
+/* ── Tools menu popup ────────────────────────────────────────────────────── */
+.tools-menu-popup {
+  position: fixed;
+  width: 240px;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.18), 0 0 0 0.5px var(--line);
+  z-index: 2147483647;
+  backdrop-filter: blur(24px);
+  overflow: hidden;
+  padding: 5px;
+}
+.tools-menu-section { padding: 2px 0; }
+.tools-menu-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 6px 10px 3px;
+}
+.tools-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition), color var(--transition);
+}
+.tools-menu-item:hover { background: var(--accent-soft); color: var(--accent); }
+.tools-menu-item svg { flex-shrink: 0; opacity: 0.75; }
+.tools-menu-item:hover svg { opacity: 1; }
+.tools-menu-item kbd {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-2);
+  background: var(--panel-soft);
+  border: 1px solid var(--line-mid);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+}
+.tools-menu-sep {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 6px;
+}
+
+/* ── Page progress bar ───────────────────────────────────────────────────── */
+#page-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  z-index: 99999;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, white));
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 200ms ease, opacity 200ms ease;
+  border-radius: 0 2px 2px 0;
+}
+#page-progress.active { opacity: 1; }
+
+/* ── Notes panel ─────────────────────────────────────────────────────────── */
+.notes-panel {
+  position: fixed;
+  right: 16px; bottom: 16px;
+  width: 296px; height: 336px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  box-shadow: 0 12px 40px rgba(0,0,0,.16), 0 0 0 1px var(--line);
+  display: flex; flex-direction: column;
+  z-index: 9999;
+  transform: translateY(12px) scale(0.97);
+  opacity: 0; pointer-events: none;
+  transition: transform 160ms cubic-bezier(.34,1.56,.64,1), opacity 140ms ease;
+}
+.notes-panel.is-open { transform: none; opacity: 1; pointer-events: all; }
+.notes-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px; font-weight: 650;
+}
+.notes-btn {
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--text-2); font-size: 12px; cursor: pointer;
+  padding: 3px 7px; transition: background 100ms;
+}
+.notes-btn:hover { background: var(--panel-soft); color: var(--text); }
+.notes-panel textarea {
+  flex: 1; border: 0; outline: 0; resize: none;
+  background: transparent; color: var(--text);
+  font: 13px/1.65 -apple-system, "Segoe UI Variable Text", sans-serif;
+  padding: 10px 12px; border-radius: 0 0 16px 16px;
+}
+.notes-panel textarea::placeholder { color: var(--text-2); }
+
+/* ── Find bar ────────────────────────────────────────────────────────────── */
+.find-bar {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 7px;
+  border-top: 1px solid var(--line);
+  background: var(--chrome);
+}
+.find-bar.is-open { display: flex; }
+.find-bar input {
+  flex: 1; max-width: 260px; height: 27px;
+  padding: 0 10px;
+  border: 1px solid var(--line-mid);
+  border-radius: 8px;
+  background: var(--panel); color: var(--text);
+  font-size: 12.5px; outline: none;
+  transition: border-color 140ms, box-shadow 140ms;
+}
+.find-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.find-count { font-size: 11px; color: var(--text-2); min-width: 44px; }
+.find-btn {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border: 0;
+  border-radius: 7px; background: transparent;
+  color: var(--text-2); font-size: 13px; cursor: pointer;
+  transition: background 100ms, color 100ms;
+}
+.find-btn:hover { background: var(--panel-soft); color: var(--text); }
+
+/* ── Autocomplete ────────────────────────────────────────────────────────── */
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 5px); left: 0; right: 0;
+  z-index: 9999;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  border-radius: 13px;
+  box-shadow: 0 10px 32px rgba(0,0,0,.16);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+.autocomplete-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 12px; border: 0;
+  background: transparent; color: var(--text);
+  text-align: left; cursor: pointer; font-size: 12.5px;
+  transition: background 80ms;
+}
+.autocomplete-item:hover { background: var(--accent-soft); color: var(--accent); }
+.ac-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ac-url { color: var(--text-2); font-size: 11px; flex-shrink: 0; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-mid); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-2); opacity: 0.6; }
+* { scrollbar-width: thin; scrollbar-color: var(--line-mid) transparent; }
+
+body[data-theme="night"] ::-webkit-scrollbar-thumb,
+body[data-theme="obsidian"] ::-webkit-scrollbar-thumb,
+body[data-theme="forest"] ::-webkit-scrollbar-thumb,
+body[data-theme="dusk"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.13); }
+body[data-theme="liquid"] ::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.22); }
+
+/* ── Selection ───────────────────────────────────────────────────────────── */
+::selection { background: var(--accent-soft); color: var(--accent); }
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Animations — prefers-reduced-motion ────────────────────────────────── */
+
+/* ── Tab loading overlay ─────────────────────────────────────────────────────
+   Webview yüklenirken beyaz/bej flash'i gizler                              */
+.tab-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 100ms ease;
+  border-radius: var(--r-view);
+}
+.tab-loading-overlay.is-loading {
+  opacity: 1;
+}
+.tab-loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--line-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.55s linear infinite;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Tab group color bar ─────────────────────────────────────────────────── */
+.tab-card[data-group-id] { border-top-width: 2px; border-top-style: solid; border-top-left-radius: 0; border-top-right-radius: 0; }
+
+/* ── Tab group header ────────────────────────────────────────────────────── */
+.tab-group-header {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 28px; padding: 0 8px 0 6px;
+  border: none; border-radius: 7px; cursor: pointer;
+  font-size: 11px; font-weight: 600; color: var(--text-2);
+  white-space: nowrap; flex-shrink: 0;
+  transition: color 120ms; margin: 0 1px; align-self: center;
+}
+.tab-group-header:hover { color: var(--text); }
+.tgh-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tgh-name { max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+.tgh-count { font-size: 10px; font-weight: 700; opacity: .6; background: rgba(128,128,128,.15); border-radius: 4px; padding: 0 4px; line-height: 16px; }
+.tgh-arrow { display: flex; align-items: center; transition: transform 200ms cubic-bezier(.34,1.56,.64,1); }
+.tgh-arrow.is-collapsed { transform: rotate(-90deg); }
+
+/* ── Collapsed sekme animasyonu ──────────────────────────────────────────── */
+.tab-card.is-group-collapsed {
+  max-width: 0 !important; min-width: 0 !important;
+  padding: 0 !important; opacity: 0 !important;
+  pointer-events: none !important; margin: 0 !important;
+  border: none !important; overflow: hidden;
+  transition: max-width 200ms cubic-bezier(.4,0,.2,1), min-width 200ms cubic-bezier(.4,0,.2,1), opacity 150ms ease, padding 200ms ease, margin 200ms ease !important;
+}
+.tab-card:not(.is-group-collapsed) {
+  transition: max-width 200ms cubic-bezier(.34,1.56,.64,1), min-width 200ms cubic-bezier(.34,1.56,.64,1), opacity 150ms ease 50ms !important;
+}
+
+/* ── Locked tab ──────────────────────────────────────────────────────────── */
+.tab-card.is-locked .tab-close { display: none; }
+.tab-card.is-locked::after {
+  content: "";
+  position: absolute;
+  top: 5px; right: 6px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+
+
+
+.view-shell {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--r-view);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-view);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;  /* below chrome-shell so popups clear it */
+}
+
+.webview-stack {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--bg); /* bej flash önleme */
+}
+
+.browser-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: none;
+  background: transparent;
+}
+.browser-view.is-active { display: flex; }
+
+/* ── Webview geçiş animasyonu — flicker önleme ───────────────────────────── */
+.browser-view {
+  transition: opacity 80ms ease;
+}
+
+/* ─── Tab spinner ─────────────────────────────────────────────── */
+.tab-spinner {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--line-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Utility overrides (old class) ──────────────────────────── */
+.utility-button {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: var(--r-btn);
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 120ms, color 120ms;
+}
+.utility-button:hover { background: var(--panel-soft); color: var(--text); }
+.utility-button.is-active { color: var(--accent); background: var(--accent-soft); }
+
+/* ─── Toolbar icon buttons (slightly larger) ──── */
+.control-button.toolbar-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+  border-radius: 9px;
+}
+.control-button.toolbar-icon svg { display: block; }
+.control-button.toolbar-icon.is-active { color: var(--accent); background: var(--accent-soft); }
+
+/* bookmark active — filled */
+#bookmark-button.is-active svg path { fill: var(--accent); stroke: var(--accent); }
+
+.toolbar-sep {
+  width: 1px; height: 16px;
+  background: var(--line-mid);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+/* nav arrows: just the svg, no text */
+#back-button, #forward-button {
+  width: 32px; height: 32px;
+  min-width: 32px; padding: 0;
+}
+#back-button svg, #forward-button svg { display: block; }
+
+/* reload button – text char */
+#reload-button {
+  width: 32px; height: 32px;
+  min-width: 32px; padding: 0;
+  font-size: 17px;
+}
+
+/* ─── Find bar ───────────────────────────────────────────── */
+.find-bar {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 7px;
+  border-top: 1px solid var(--line);
+  background: var(--chrome);
+}
+.find-bar.is-open { display: flex; }
+.find-bar input {
+  flex: 1; max-width: 260px; height: 28px;
+  padding: 0 10px; border: 1px solid var(--line-mid);
+  border-radius: 7px; background: var(--panel);
+  color: var(--text); font-size: 12.5px; outline: none;
+}
+.find-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.find-count { font-size: 11.5px; color: var(--text-2); min-width: 48px; }
+.find-btn {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border: 0;
+  border-radius: 6px; background: transparent;
+  color: var(--text-2); font-size: 13px; cursor: pointer;
+  transition: background 100ms, color 100ms;
+}
+.find-btn:hover { background: var(--panel-soft); color: var(--text); }
+.find-close-btn { margin-left: 2px; }
+
+/* ─── Notes panel ────────────────────────────────────────── */
+.notes-panel {
+  position: fixed;
+  right: 18px; bottom: 18px;
+  width: 300px; height: 340px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 0 0 1px var(--line);
+  display: flex; flex-direction: column;
+  z-index: 9999;
+  transform: translateY(16px) scale(0.97);
+  opacity: 0; pointer-events: none;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+.notes-panel.is-open { transform: none; opacity: 1; pointer-events: all; }
+.notes-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px; font-weight: 600;
+}
+.notes-btn {
+  border: 0; border-radius: 6px; background: transparent;
+  color: var(--text-2); font-size: 12px; cursor: pointer;
+  padding: 3px 7px; transition: background 100ms;
+}
+.notes-btn:hover { background: var(--panel-soft); color: var(--text); }
+.notes-panel textarea {
+  flex: 1; border: 0; outline: 0; resize: none;
+  background: transparent; color: var(--text);
+  font: 13px/1.6 -apple-system, "Segoe UI Variable Text", sans-serif;
+  padding: 10px 12px; border-radius: 0 0 14px 14px;
+}
+.notes-panel textarea::placeholder { color: var(--text-2); }
+
+/* ─── Focus mode ─────────────────────────────────────────── */
+.chrome-shell.focus-hidden {
+  opacity: 0; pointer-events: none; height: 0;
+  overflow: hidden; padding: 0; margin: 0;
+}
+body.focus-mode .browser-shell { gap: 0; padding: 0; }
+body.focus-mode .view-shell { border-radius: 0; border: 0; margin: 0; }
+
+/* ─── Reader btn: only visible on web tabs ───────────────── */
+#reader-btn { display: none; }
+#reader-btn.is-available { display: grid; }
+#reader-btn.is-active { color: var(--accent); background: var(--accent-soft); }
+#focus-btn.is-active { color: var(--accent); background: var(--accent-soft); }
+#notes-toggle.is-active { color: var(--accent); background: var(--accent-soft); }
+
+/* ─── Tab audio badge ────────────────────────────────────── */
+.tab-favicon { position: relative; }
+.tab-audio {
+  position: absolute; bottom: -3px; right: -3px;
+  width: 14px; height: 14px;
+  border-radius: 50%; border: 0;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 100ms;
+}
+.tab-audio:hover { background: var(--accent); color: var(--accent-ink); }
+.tab-audio.is-muted { background: var(--line-mid); color: var(--text-2); }
+
+/* ─── Bookmark star fill when active ─────────────────────── */
+#bookmark-button.is-active .bookmark-path { fill: var(--accent); stroke: var(--accent); }
+
+/* ─── Settings gear fix (proper SVG viewBox) ─────────────── */
+.control-button.toolbar-icon svg { overflow: visible; }
+
+/* ─── Autocomplete ────────────────────────────────────────── */
+.address-form { position: relative; }
+.autocomplete-list {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 300;
+  background: var(--panel); border: 1px solid var(--line-mid);
+  border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.14);
+  overflow: hidden; backdrop-filter: blur(16px);
+  z-index: 9999;
+}
+.autocomplete-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 12px; border: 0;
+  background: transparent; color: var(--text); text-align: left;
+  cursor: pointer; font-size: 12.5px; transition: background 80ms;
+}
+.autocomplete-item:hover { background: var(--panel-soft); }
+.ac-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ac-url   { color: var(--text-2); font-size: 11px; flex-shrink: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ─── Soft focus mode ─────────────────────────────────────── */
+.chrome-shell.focus-compact .title-row,
+.chrome-shell.focus-compact .bookmark-strip,
+.chrome-shell.focus-compact .find-bar { display: none !important; }
+.chrome-shell.focus-compact { padding-bottom: 0; }
+.chrome-shell.focus-compact .toolbar-row { padding: 4px 10px 6px; }
+
+.focus-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 4px 10px;
+  background: var(--chrome); border-bottom: 1px solid var(--line);
+  transition: opacity 150ms;
+}
+.focus-bar.is-hidden { display: none; }
+.focus-exit-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 0; border-radius: 8px; background: var(--accent-soft);
+  color: var(--accent); font-size: 12px; padding: 5px 12px; cursor: pointer;
+  transition: background 120ms;
+}
+.focus-exit-btn:hover { background: var(--accent); color: var(--accent-ink); }
+.tabs-bar-focus {
+  display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none;
+}
+
+/* ─── Incognito tab ───────────────────────────────────────── */
+.tab-card.is-incognito { opacity: 0.85; }
+.tab-card.is-incognito .tab-title::before { content: "🕵 "; font-size: 10px; }
+
+/* ─── Pinned tab ──────────────────────────────────────────── */
+.tab-card.is-pinned { min-width: 40px !important; max-width: 40px !important; padding: 0 8px; }
+.tab-card.is-pinned .tab-copy { display: none; }
+
+/* ─── Sleeping tab ────────────────────────────────────────── */
+.tab-card.is-sleeping { opacity: 0.5; }
+.tab-card.is-sleeping .tab-title { font-style: italic; }
+
+/* ─── Incognito btn active state ──────────────────────────── */
+#incognito-btn.is-active { color: #7a6ac4; background: rgba(122,106,196,0.14); }
+
+/* ─── Gear icon — simple spoke design (clean) ─────────────── */
+[data-page="settings"] svg { overflow: visible; }
+
+/* ─── Bookmark fill ───────────────────────────────────────── */
+#bookmark-button.is-active .bookmark-path { fill: var(--accent); stroke: var(--accent); }
+
+/* ─── Chrome row dividers ─────────────────────────────────── */
+.title-row {
+  border-bottom: 1px solid var(--line);
+}
+.toolbar-row {
+  border-bottom: 1px solid var(--line);
+}
+/* find bar already has border-top, bookmark strip subtle */
+.bookmark-strip {
+  border-top: none; /* divider comes from toolbar-row border-bottom */
+}
+
+/* ─── Downloads popup ─────────────────────────────────────── */
+.dl-popup-wrap {
+  position: static; /* let popup position relative to toolbar-actions parent */
+}
+.dl-popup {
+  position: fixed;
+  width: 320px;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.16), 0 0 0 1px var(--line);
+  z-index: 9999;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+.dl-popup.is-open {
+  opacity: 1;
+  pointer-events: all;
+  transform: none;
+}
+.dl-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--text);
+}
+.dl-popup-all {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+.dl-popup-all:hover { text-decoration: underline; }
+.dl-popup-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 0;
+  scrollbar-width: thin;
+}
+.dl-popup-item {
+  padding: 8px 14px;
+  transition: background 80ms;
+}
+.dl-popup-item:hover { background: var(--panel-soft); }
+.dl-popup-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.dl-popup-bar {
+  height: 3px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.dl-popup-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 200ms;
+}
+.dl-popup-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+.dl-popup-open {
+  margin-left: auto;
+  border: 0;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.dl-popup-open:hover { background: var(--accent); color: var(--accent-ink); }
+.dl-empty {
+  margin: 0;
+  padding: 16px 14px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+/* ─── Site info button ────────────────────────────────────── */
+.site-info-btn {
+  display: none; /* shown by JS when on web tab */
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 100ms, color 100ms;
+  position: absolute !important;
+  left: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
+  pointer-events: all;
+}
+.site-info-btn:hover { background: var(--panel-soft); color: var(--text); }
+.site-info-btn[data-secure="true"]  { color: var(--accent); }
+.site-info-btn[data-secure="false"] { color: #e07040; }
+
+/* shift input text right when site-info btn visible */
+/* address-form position set in chrome overrides */
+
+/* ─── Site info popup ─────────────────────────────────────── */
+.site-info-popup {
+  position: fixed;
+  width: 280px;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 0 0 1px var(--line);
+  z-index: 9999;
+  backdrop-filter: blur(24px);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transition: opacity 130ms ease, transform 130ms ease;
+}
+.site-info-popup.is-open {
+  opacity: 1;
+  pointer-events: all;
+  transform: none;
+}
+.si-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 12px;
+}
+.si-lock {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.si-title-wrap { min-width: 0; }
+#si-status {
+  display: block;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text);
+}
+.si-host {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.si-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 0;
+}
+.si-section { padding: 8px 14px; }
+.si-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 12.5px;
+}
+.si-label { color: var(--text-2); }
+.si-value { font-weight: 500; color: var(--text); text-align: right; font-size: 12px; }
+.si-perm-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.si-perm-row svg { flex-shrink: 0; opacity: 0.7; }
+.si-perm-row span:nth-child(2) { flex: 1; color: var(--text); }
+.si-perm-state { font-size: 11.5px; margin-left: auto; }
+
+/* ─── Scrollbar — dark temalar için koyu ─────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-mid); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-2); }
+* { scrollbar-width: thin; scrollbar-color: var(--line-mid) transparent; }
+
+body[data-theme="night"] ::-webkit-scrollbar-thumb,
+body[data-theme="obsidian"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+body[data-theme="night"] ::-webkit-scrollbar-thumb:hover,
+body[data-theme="obsidian"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }
+body[data-theme="liquid"] ::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.25); }
+
+/* ─── History popup list ──────────────────────────────────── */
+.hist-popup-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 0;
+  scrollbar-width: thin;
+}
+.hist-popup-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font-size: 12.5px;
+  transition: background 80ms;
+}
+.hist-popup-item:hover { background: var(--panel-soft); }
+.hist-popup-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* ══════════════════════════════════════════════════════════════
+   BOOKMARK STRIP IMPROVEMENTS
+   ══════════════════════════════════════════════════════════════ */
+.strip-sep {
+  width: 1px; height: 16px; background: var(--line-mid);
+  display: inline-block; margin: 0 4px; vertical-align: middle; flex-shrink: 0;
+}
+.toolbar-sep {
+  width: 1px; height: 16px; background: var(--line-mid);
+  flex-shrink: 0; align-self: center; margin: 0 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ZOOM INDICATOR (override any duplicate)
+   ══════════════════════════════════════════════════════════════ */
+#_zoom_ind {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9990;
+  background: var(--panel); border: 1px solid var(--line-mid);
+  border-radius: 8px; padding: 5px 14px; font-size: 13px; font-weight: 700;
+  color: var(--text); box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  pointer-events: none; transition: opacity 200ms;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FONT SIZE FIX — force cascade through body attribute
+   ══════════════════════════════════════════════════════════════ */
+body[data-fontsize="small"]  { --fs-ui: 12px; font-size: 12px !important; }
+body[data-fontsize="medium"] { --fs-ui: 13px; font-size: 13px !important; }
+body[data-fontsize="large"]  { --fs-ui: 15px; font-size: 15px !important; }
+
+body[data-fontsize="small"]  .tab-title    { font-size: 11px; }
+body[data-fontsize="small"]  .address-input{ font-size: 12px; }
+body[data-fontsize="small"]  .bookmark-chip{ font-size: 11px; }
+body[data-fontsize="large"]  .tab-title    { font-size: 13px; }
+body[data-fontsize="large"]  .address-input{ font-size: 14px; }
+body[data-fontsize="large"]  .bookmark-chip{ font-size: 13px; }
+body[data-fontsize="large"]  .control-button { font-size: 15px; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB CONTEXT MENU (if not already in CSS)
+   ══════════════════════════════════════════════════════════════ */
+.tab-context-menu {
+  position: fixed; z-index: 9999;
+  background: var(--panel); border: 1px solid var(--line-mid);
+  border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.16);
+  padding: 4px; min-width: 190px;
+}
+.tcm-item {
+  display: block; width: 100%; text-align: left; padding: 7px 12px;
+  border: 0; background: 0; cursor: pointer; font-size: 12.5px;
+  color: var(--text); border-radius: 7px; transition: background 100ms;
+}
+.tcm-item:hover { background: var(--accent-soft); }
+.tcm-item.danger { color: #e07040; }
+.tcm-item.danger:hover { background: rgba(200,60,40,.08); }
+.tcm-sep { height: 1px; background: var(--line); margin: 3px 6px; }
+
+/* ══════════════════════════════════════════════════════════════
+   FOLDER CHIP IN BOOKMARK STRIP
+   ══════════════════════════════════════════════════════════════ */
+.bookmark-chip.folder-chip {
+  gap: 4px;
+  padding-right: 6px;
+}
+
+
+/* ════ ARAÇLAR MENÜSÜ ════════════════════════════════════════════════════ */
+.tools-menu-popup {
+  position: fixed;
+  z-index: 2147483647;
+  background: var(--panel);
+  border: 1px solid var(--line-mid);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.22);
+  padding: 6px;
+  min-width: 230px;
+  display: none;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.tools-menu-label {
+  font-size: 10px; font-weight: 700; color: var(--text-2);
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 6px 10px 3px;
+}
+.tools-menu-item {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 7px 10px;
+  border: 0; background: 0; cursor: pointer;
+  font-size: 12.5px; color: var(--text);
+  border-radius: 7px; text-align: left;
+  transition: background 80ms;
+}
+.tools-menu-item:hover { background: var(--accent-soft); color: var(--accent); }
+.tools-menu-item kbd {
+  margin-left: auto; font-size: 10px; color: var(--text-2);
+  background: var(--panel-soft); border: 1px solid var(--line-mid);
+  border-radius: 4px; padding: 1px 5px; font-family: inherit; font-weight: 400;
+}
+.tools-menu-sep { height: 1px; background: var(--line); margin: 4px 6px; }
+
+
+/* ════ SELECT ELEMENT DARK THEME FIX ════════════════════════════════════ */
+select {
+  color-scheme: inherit;
+}
+body[data-theme="night"] select,
+body[data-theme="obsidian"] select,
+body[data-theme="liquid"] select {
+  color-scheme: dark;
+}
+
+/* ════ UI FONT — tüm elementlere uygula ════════════════════════════════ */
+html[style*="font-family"] *,
+html[style*="font-family"] {
+  font-family: inherit !important;
+}
+
+/* ════ OKUMA MODU TOOLBAR DARK TEMA ════════════════════════════════════ */
+#_illumina_reader select,
+#_illumina_reader button {
+  color-scheme: inherit;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   YENİ TEMALAR v4
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Sand — sıcak kum, çöl */
+body[data-theme="sand"] {
+  --bg:          #f0e8d8;
+  --panel:       rgba(252,246,236,0.97);
+  --panel-soft:  rgba(255,248,232,0.55);
+  --panel-strong:rgba(245,236,218,0.99);
+  --line:        rgba(160,130,90,0.13);
+  --line-mid:    rgba(160,130,90,0.22);
+  --line-soft:   rgba(160,130,90,0.08);
+  --text:        #2c2018;
+  --text-2:      #7a6040;
+  --accent:      #c47828;
+  --accent-soft: rgba(196,120,40,0.12);
+  --accent-ink:  #fff8ee;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(100,60,20,.09);
+}
+
+/* Sepia — eski kitap */
+body[data-theme="sepia"] {
+  --bg:          #f4ead8;
+  --panel:       rgba(250,242,226,0.97);
+  --panel-soft:  rgba(255,248,232,0.45);
+  --panel-strong:rgba(246,236,214,0.99);
+  --line:        rgba(140,100,60,0.14);
+  --line-mid:    rgba(140,100,60,0.24);
+  --line-soft:   rgba(140,100,60,0.08);
+  --text:        #2a1e0e;
+  --text-2:      #806040;
+  --accent:      #8b5e2e;
+  --accent-soft: rgba(139,94,46,0.13);
+  --accent-ink:  #fff8ee;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(80,40,10,.10);
+}
+
+/* Arctic — buzul beyaz-mavi */
+body[data-theme="arctic"] {
+  --bg:          #eaf2f8;
+  --panel:       rgba(248,252,255,0.97);
+  --panel-soft:  rgba(255,255,255,0.60);
+  --panel-strong:rgba(240,248,255,0.99);
+  --line:        rgba(80,140,200,0.13);
+  --line-mid:    rgba(80,140,200,0.22);
+  --line-soft:   rgba(80,140,200,0.08);
+  --text:        #0e2030;
+  --text-2:      #4a7090;
+  --accent:      #1e7fc0;
+  --accent-soft: rgba(30,127,192,0.12);
+  --accent-ink:  #f0f8ff;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(20,80,140,.08);
+}
+
+/* Rose — gül pembe */
+body[data-theme="rose"] {
+  --bg:          #faeef0;
+  --panel:       rgba(255,248,250,0.97);
+  --panel-soft:  rgba(255,244,246,0.55);
+  --panel-strong:rgba(252,240,244,0.99);
+  --line:        rgba(200,100,120,0.13);
+  --line-mid:    rgba(200,100,120,0.22);
+  --line-soft:   rgba(200,100,120,0.08);
+  --text:        #2e1018;
+  --text-2:      #9a5060;
+  --accent:      #d4506a;
+  --accent-soft: rgba(212,80,106,0.12);
+  --accent-ink:  #fff0f3;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(140,40,60,.08);
+}
+
+/* Forest — koyu orman yeşili */
+body[data-theme="forest"] {
+  --bg:          #1a2218;
+  --panel:       rgba(26,36,24,0.97);
+  --panel-soft:  rgba(255,255,255,0.04);
+  --panel-strong:rgba(18,28,16,0.99);
+  --line:        rgba(100,160,80,0.12);
+  --line-mid:    rgba(100,160,80,0.20);
+  --line-soft:   rgba(100,160,80,0.07);
+  --text:        #d0e8c8;
+  --text-2:      #7a9e6e;
+  --accent:      #6abf5e;
+  --accent-soft: rgba(106,191,94,0.15);
+  --accent-ink:  #0d1e0b;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(0,0,0,.32);
+}
+body[data-theme="forest"] .view-shell { background: #1a2218; }
+
+/* Dusk — alacakaranlık mor/lacivert */
+body[data-theme="dusk"] {
+  --bg:          #1c1828;
+  --panel:       rgba(28,24,38,0.97);
+  --panel-soft:  rgba(255,255,255,0.05);
+  --panel-strong:rgba(20,16,32,0.99);
+  --line:        rgba(140,120,200,0.12);
+  --line-mid:    rgba(140,120,200,0.20);
+  --line-soft:   rgba(140,120,200,0.07);
+  --text:        #e0daf5;
+  --text-2:      #8878b8;
+  --accent:      #b09be8;
+  --accent-soft: rgba(176,155,232,0.15);
+  --accent-ink:  #0e0a1c;
+  --shadow-view: 0 0 0 1px var(--line), 0 12px 32px rgba(0,0,0,.35);
+}
+body[data-theme="dusk"] .view-shell { background: #1c1828; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   GRAIN — kağıtsı doku
+   ════════════════════════════════════════════════════════════════════════ */
+body[data-grain="low"]::before,
+body[data-grain="medium"]::before,
+body[data-grain="high"]::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+body[data-grain="low"]::before    { opacity: 0.022; }
+body[data-grain="medium"]::before { opacity: 0.042; }
+body[data-grain="high"]::before   { opacity: 0.070; }
+body[data-theme="night"][data-grain="low"]::before,
+body[data-theme="obsidian"][data-grain="low"]::before,
+body[data-theme="forest"][data-grain="low"]::before,
+body[data-theme="dusk"][data-grain="low"]::before   { opacity: 0.038; }
+body[data-theme="night"][data-grain="medium"]::before,
+body[data-theme="obsidian"][data-grain="medium"]::before,
+body[data-theme="forest"][data-grain="medium"]::before,
+body[data-theme="dusk"][data-grain="medium"]::before{ opacity: 0.060; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   SPLIT VIEW
+   ════════════════════════════════════════════════════════════════════════ */
+.view-shell[data-split="true"],
+.view-shell[style*="flex"] {
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   GENEL POLISH
+   ════════════════════════════════════════════════════════════════════════ */
+::selection { background: var(--accent-soft); color: var(--text); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-mid); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-2); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+button:disabled, input:disabled, select:disabled { opacity: 0.45; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   DİKEY SEKME — layout-vertical class
+   ════════════════════════════════════════════════════════════════════════ */
+/* main-stack — yatay modda sadece flex geçişi için wrapper */
+.main-stack {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-vertical {
+  display: flex !important;
+  flex-direction: row !important;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.layout-vertical .main-stack {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 8px 8px 8px 0;
+  gap: 6px;
+  box-sizing: border-box;
+}
+.layout-vertical .view-shell {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--r-view);
+}
+.layout-vertical .chrome-shell {
+  width: 220px; min-width: 140px; max-width: 280px;
+  height: 100vh; flex-shrink: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--line-mid);
+  border-bottom: none !important;
+  overflow: hidden;
+  display: flex;
+}
+.layout-vertical .title-row {
+  flex-direction: column;
+  flex: 1; overflow: hidden;
+  padding: 8px 6px 0;
+  gap: 2px;
+}
+.layout-vertical .brand-button {
+  width: 100%; justify-content: flex-start;
+  padding: 6px 8px; margin-bottom: 2px; flex-shrink: 0;
+}
+.layout-vertical .tabs-row {
+  flex-direction: column; flex: 1;
+  overflow: hidden; width: 100%; gap: 0;
+}
+.layout-vertical .tabs-bar {
+  flex-direction: column !important;
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  border-bottom: none; padding: 0; height: auto; max-height: none;
+}
+.layout-vertical .tabs-bar::-webkit-scrollbar { width: 3px; }
+.layout-vertical .tabs-bar::-webkit-scrollbar-thumb { background: var(--line-mid); border-radius: 3px; }
+.layout-vertical .tab-card {
+  width: 100% !important; max-width: none !important; min-width: 0 !important;
+  height: 34px; border-radius: 8px; margin: 1px 0;
+  border-top: 1px solid transparent !important;
+  border-left: 3px solid transparent;
+}
+.layout-vertical .tab-card[style*="border-top"] {
+  border-left-color: var(--_grp-color, transparent) !important;
+  border-top-color: transparent !important;
+}
+.layout-vertical .tab-add-button { width: calc(100% - 4px); margin: 4px 2px; flex-shrink: 0; }
+.layout-vertical .security-badge  { display: none; }
+.layout-vertical .tabs-bar-focus  { display: none !important; }
+.layout-vertical .main-stack {
+  flex: 1; min-width: 0; height: 100vh;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SHIELDS BADGE
+   ════════════════════════════════════════════════════════════════════════ */
+.shields-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: .02em;
+}
+.shields-badge.on  { background: rgba(50,180,80,.12);  color: #1a9e40; }
+.shields-badge.off { background: rgba(180,40,40,.10);  color: #c03030; }
+.shields-badge svg { width: 9px; height: 9px; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   ANİMASYONLAR & MICRO-INTERACTIONS
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Sekme oluşma */
+@keyframes tab-appear {
+  from { opacity: 0; transform: translateY(-3px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.tab-card { animation: tab-appear 140ms ease forwards; }
+
+/* Tab kapat hover */
+.tab-close {
+  transition: opacity 100ms ease, background 100ms ease, color 100ms ease, transform 80ms ease !important;
+}
+.tab-close:hover  { transform: scale(1.12) !important; }
+.tab-close:active { transform: scale(0.88) !important; }
+
+/* Tab active geçiş */
+.tab-card {
+  transition: background 130ms ease, color 130ms ease, border-color 130ms ease !important;
+}
+
+/* Buton aktif baskı */
+.control-button:active, .soft-button:active, .tab-add-button:active {
+  transform: scale(0.96);
+  transition: transform 60ms ease;
+}
+.control-button, .soft-button, .tab-add-button {
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 60ms ease;
+}
+
+/* Yer imi hover */
+.bookmark-chip {
+  transition: background 120ms ease, color 120ms ease, transform 80ms ease;
+}
+.bookmark-chip:hover { transform: translateY(-1px); }
+
+/* Page progress bar */
+#page-progress.active { opacity: 1 !important; }
+
+/* Panel animasyonları */
+.notes-panel     { transition: transform 180ms ease, opacity 180ms ease; }
+.dl-popup        { transition: opacity 150ms ease, transform 150ms ease; transform-origin: top right; }
+.dl-popup.is-open { opacity: 1 !important; transform: none !important; }
+
+/* Toast */
+@keyframes toast-in {
+  from { opacity:0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity:1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   TOR BADGE
+   ════════════════════════════════════════════════════════════════════════ */
+.tor-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 6px; border-radius: 999px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .04em;
+  background: rgba(120,60,200,.15); color: #7832c8; flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   GENEL UX POLISH
+   ════════════════════════════════════════════════════════════════════════ */
+::selection { background: var(--accent-soft); color: var(--text); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-mid); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-2); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+button:disabled, input:disabled, select:disabled { opacity: 0.45; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ════ KİLİTLİ SEKME ════ */
+.tab-card.is-locked .tab-close { display:none !important; }
+.tab-card.is-locked::after {
+  content:"";
+  display:block;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);opacity:.7;
+  flex-shrink:0;margin-left:auto;margin-right:2px;
+}
+
+/* ════ ARAŞTIRMA PANELİ SCROLLBAR ════ */
+._rp_body::-webkit-scrollbar { width:4px; }
+._rp_body::-webkit-scrollbar-thumb { background:var(--line-mid);border-radius:3px; }
+
+/* ════ SEKME SÜRÜKLEME ════ */
+.tab-card[draggable="true"] { cursor:grab; }
+.tab-card[draggable="true"]:active { cursor:grabbing; }
+
+/* ════════════════════════════════════════════════════════════════
+   POLISH & ANİMASYONLAR v2
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Temel geçiş değişkenleri ── */
+:root {
+  --ease-spring: var(--illumina-spring, cubic-bezier(.34,1.4,.64,1));
+  --ease-out:    var(--illumina-warmth,  cubic-bezier(.32,.72,0,1));
+  --ease-in-out: var(--illumina-settle,  cubic-bezier(.4,0,.2,1));
+  --dur-fast:    120ms;
+  --dur-mid:     200ms;
+  --dur-slow:    320ms;
+}
+
+/* ── Sekme açılış animasyonu ── */
+@keyframes tabIn {
+  from { opacity:0; transform:translateY(-6px) scale(.95); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+.tab-card {
+  animation: tabIn var(--dur-fast) var(--ease-spring);
+  transition:
+    background var(--dur-fast) var(--ease-in-out),
+    border-color var(--dur-fast) var(--ease-in-out),
+    box-shadow var(--dur-mid) var(--ease-in-out),
+    opacity var(--dur-fast) var(--ease-in-out),
+    transform var(--dur-fast) var(--ease-spring);
+}
+.tab-card:hover:not(.is-active) {
+  transform: translateY(-1px);
+}
+.tab-card:active {
+  transform: scale(.97);
+}
+.tab-card.is-active {
+  box-shadow: 0 2px 12px rgba(0,0,0,.12);
+}
+
+/* ── Sekme kapat butonu ── */
+.tab-close {
+  transition: opacity var(--dur-fast), transform var(--dur-fast) var(--ease-spring), background var(--dur-fast);
+}
+.tab-close:hover {
+  transform: scale(1.18) rotate(90deg);
+}
+
+/* ── Sayfa yükleme progress bar ── */
+@keyframes progressPulse {
+  0%   { opacity:1; }
+  50%  { opacity:.7; }
+  100% { opacity:1; }
+}
+#page-progress {
+  transition: transform 160ms var(--ease-in-out), opacity 200ms;
+}
+#page-progress.active {
+  animation: progressPulse 1.4s var(--ease-in-out) infinite;
+}
+
+/* ── Adres çubuğu focus ── */
+.address-form {
+  transition: box-shadow var(--dur-mid) var(--ease-in-out);
+}
+.address-input:focus {
+  animation: addrFocus var(--dur-mid) var(--ease-spring) forwards;
+}
+@keyframes addrFocus {
+  from { transform: scaleX(.99); }
+  to   { transform: scaleX(1);   }
+}
+
+/* ── Toolbar butonları ── */
+.control-button,
+.toolbar-icon {
+  transition:
+    background var(--dur-fast),
+    color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast);
+}
+.control-button:hover,
+.toolbar-icon:hover {
+  transform: translateY(-1px);
+}
+.control-button:active,
+.toolbar-icon:active {
+  transform: scale(.92);
+}
+
+/* ── Yer imi şeridi chip'leri ── */
+.bookmark-chip {
+  transition:
+    background var(--dur-fast),
+    color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast);
+}
+.bookmark-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+}
+.bookmark-chip:active {
+  transform: scale(.95);
+}
+
+/* ── Panel açılış animasyonları ── */
+@keyframes slideInRight {
+  from { transform:translateX(100%); opacity:.6; }
+  to   { transform:translateX(0);    opacity:1;  }
+}
+@keyframes slideInLeft {
+  from { transform:translateX(-100%); opacity:.6; }
+  to   { transform:translateX(0);     opacity:1;  }
+}
+@keyframes slideInUp {
+  from { transform:translateY(12px); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
+}
+@keyframes scaleIn {
+  from { transform:scale(.94) translateY(-6px); opacity:0; }
+  to   { transform:scale(1)   translateY(0);    opacity:1; }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+
+/* Popup'lar */
+.site-info-popup.is-open,
+.dl-popup.is-open,
+#hist-popup.is-open {
+  animation: slideInUp var(--dur-mid) var(--ease-spring);
+}
+
+/* ── Toast animasyonu (renderer.js ile koordineli) ── */
+@keyframes toastIn {
+  from { opacity:0; transform:translateX(-50%) translateY(12px) scale(.95); }
+  to   { opacity:1; transform:translateX(-50%) translateY(0)    scale(1);   }
+}
+
+/* ── Autocomplete dropdown ── */
+.autocomplete-list {
+  animation: slideInUp var(--dur-fast) var(--ease-spring);
+  transform-origin: top center;
+}
+
+/* ── Find bar ── */
+.find-bar {
+  transition: max-height var(--dur-mid) var(--ease-in-out),
+              opacity var(--dur-fast),
+              transform var(--dur-fast) var(--ease-spring);
+  transform-origin: top;
+}
+.find-bar:not(.is-open) {
+  transform: scaleY(.9);
+}
+.find-bar.is-open {
+  transform: scaleY(1);
+}
+
+/* ── Notes panel ── */
+.notes-panel {
+  transition: transform var(--dur-mid) var(--ease-spring),
+              opacity var(--dur-mid);
+  transform-origin: bottom right;
+}
+.notes-panel:not(.is-open) {
+  transform: scale(.92) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+}
+.notes-panel.is-open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* ── Focus mode geçişi ── */
+.chrome-shell {
+  transition: height var(--dur-slow) var(--ease-in-out),
+              transform var(--dur-slow) var(--ease-in-out);
+}
+
+/* ── Site info popup ── */
+#site-info-popup {
+  transform-origin: top left;
+  transition: opacity var(--dur-fast), transform var(--dur-fast) var(--ease-spring);
+}
+#site-info-popup:not(.is-open) {
+  opacity: 0;
+  transform: scale(.95) translateY(-4px);
+  pointer-events: none;
+}
+#site-info-popup.is-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ── Downloads popup ── */
+#dl-popup, #hist-popup {
+  transform-origin: top right;
+  transition: opacity var(--dur-fast), transform var(--dur-fast) var(--ease-spring);
+}
+#dl-popup:not(.is-open),
+#hist-popup:not(.is-open) {
+  opacity: 0;
+  transform: scale(.95) translateY(-4px);
+  pointer-events: none;
+}
+#dl-popup.is-open,
+#hist-popup.is-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ── Tools menu — JS ile yönetiliyor ── */
+
+/* ── Sekme spinner ── */
+@keyframes tabSpinner {
+  to { transform: rotate(360deg); }
+}
+.tab-spinner {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border: 1.5px solid var(--line-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: tabSpinner .7s linear infinite;
+}
+
+/* ── Favicon yükleniyor soluk animasyonu ── */
+@keyframes faviconShimmer {
+  0%,100% { opacity:.5; }
+  50%      { opacity:.9; }
+}
+.tab-favicon img[src=""] {
+  animation: faviconShimmer 1.2s ease infinite;
+}
+
+/* ── Sayfa geçiş flash'ı engelle ── */
+.browser-view {
+  transition: opacity 80ms var(--ease-in-out);
+}
+.browser-view:not(.is-active) {
+  opacity: 0;
+  pointer-events: none;
+}
+.browser-view.is-active {
+  opacity: 1;
+}
+
+/* ── Tema değişimi geçişi ── */
+body {
+  transition:
+    background-color var(--dur-slow) var(--ease-in-out),
+    color var(--dur-mid) var(--ease-in-out);
+}
+
+/* ── Buton ripple efekti ── */
+@keyframes ripple {
+  from { transform:scale(0); opacity:.4; }
+  to   { transform:scale(2.5); opacity:0; }
+}
+.control-button::after,
+.toolbar-icon::after {
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  background: var(--accent);
+  opacity:0;
+  pointer-events:none;
+}
+.control-button:focus-visible::after,
+.toolbar-icon:focus-visible::after {
+  animation: ripple 400ms var(--ease-out) forwards;
+}
+
+/* ── Scrollbar animasyonu ── */
+::-webkit-scrollbar-thumb {
+  transition: background var(--dur-fast);
+}
+
+/* ── Hover önizleme smooth ── */
+#_tab_pv {
+  transition: opacity 80ms var(--ease-in-out), transform 100ms var(--ease-spring);
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ════ POLISH.JS CSS DESTEĞİ ════ */
+
+/* Sekme opacity geçişi yumuşak olsun */
+.tab-card {
+  transition:
+    background var(--dur-fast, 120ms) var(--ease-in-out, ease),
+    border-color var(--dur-fast, 120ms) var(--ease-in-out, ease),
+    box-shadow var(--dur-mid, 200ms) var(--ease-in-out, ease),
+    opacity 800ms ease,
+    transform var(--dur-fast, 120ms) var(--ease-spring, ease);
+}
+
+/* Animasyonlar kapalıysa her şeyi durdur */
+html[data-anim-off] *,
+html[data-anim-off] *::before,
+html[data-anim-off] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Renk sıcaklığı geçişi */
+body {
+  transition:
+    background-color var(--dur-slow, 320ms) ease,
+    color var(--dur-mid, 200ms) ease,
+    filter 2000ms ease;
+}
+
+/* Permission pulse — dot boyutu */
+.security-dot {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Smart tooltip */
+#_smart_tt {
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+/* Equalizer barları renk sıcaklığını takip etsin */
+.tab-eq-bar {
+  background: var(--accent);
+}
+
+/* Tab-card audio badge pozisyonu */
+.tab-card .tab-favicon {
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ILLUMINA IDENTITY SYSTEM — "Sessiz Güç"
+   Sıcak, odaklı, minimal, premium. Bağırmaz ama hissedilir.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Kimlik değişkenleri ── */
+:root {
+  --illumina-warmth:   cubic-bezier(.32,.72,0,1);
+  --illumina-spring:   cubic-bezier(.34,1.4,.64,1);
+  --illumina-settle:   cubic-bezier(.4,0,.2,1);
+  --illumina-snap:     cubic-bezier(.68,-0.4,.27,1.4);
+}
+
+/* ── Sekme kapanma animasyonu — sol kayarak + fade ── */
+@keyframes tabClose {
+  0%   { opacity:1; transform:translateX(0)   scale(1);    max-width:200px; padding:0 8px; }
+  60%  { opacity:0; transform:translateX(-18px) scale(.92); }
+  100% { opacity:0; transform:translateX(-24px) scale(.88); max-width:0; padding:0; }
+}
+.tab-card.is-closing {
+  animation: tabClose 160ms var(--illumina-settle) forwards;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Staggered tab restore ── */
+@keyframes tabRestoreIn {
+  from { opacity:0; transform:translateY(-8px) scale(.93); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+.tab-card.is-restoring {
+  animation: tabRestoreIn 220ms var(--illumina-spring) both;
+}
+
+/* ── Adres çubuğu focus expand — Safari hissi ── */
+.address-form {
+  transition: transform 200ms var(--illumina-spring);
+}
+.address-form:focus-within {
+  transform: scaleX(1.012);
+  transform-origin: center;
+}
+.address-input {
+  transition:
+    border-color 160ms var(--illumina-settle),
+    box-shadow 200ms var(--illumina-spring),
+    background 140ms ease,
+    padding 200ms var(--illumina-spring);
+}
+.address-input:focus {
+  padding-left: 16px;
+  padding-right: 16px;
+  letter-spacing: .01em;
+}
+
+/* ── Icon morphing — reload ↺ → stop ✕ ── */
+.reload-icon-path {
+  transition: d 180ms var(--illumina-settle), opacity 120ms;
+}
+
+/* ── Button pressure — içe gömülme ── */
+.control-button:active,
+.toolbar-icon:active,
+.tab-add-button:active,
+.bookmark-chip:active {
+  transform: scale(.91) !important;
+  transition-duration: 60ms !important;
+}
+.control-button:not(:active),
+.toolbar-icon:not(:active) {
+  transition: transform 200ms var(--illumina-spring) !important;
+}
+
+/* ── Scroll hız feedback — scrollbar kalınlaşır ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  transition: width 200ms, height 200ms;
+}
+::-webkit-scrollbar.is-fast {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-mid);
+  border-radius: 4px;
+  transition: background 200ms, border-radius 200ms;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-2);
+}
+
+/* ── Sekme sıkışma animasyonu ── */
+.tab-card {
+  transition:
+    background      var(--dur-fast, 120ms) var(--illumina-settle),
+    border-color    var(--dur-fast, 120ms) var(--illumina-settle),
+    box-shadow      var(--dur-mid,  200ms) var(--illumina-settle),
+    max-width       180ms var(--illumina-warmth),
+    min-width       180ms var(--illumina-warmth),
+    opacity         600ms ease,
+    transform       var(--dur-fast, 120ms) var(--illumina-spring),
+    color           var(--dur-fast, 120ms) ease;
+}
+
+/* ── Find-in-page highlight flash ── */
+@keyframes findFlash {
+  0%   { background: var(--accent); color: #fff; transform: scale(1.06); }
+  60%  { background: rgba(176,106,58,.3); }
+  100% { background: rgba(176,106,58,.15); transform: scale(1); }
+}
+::highlight(find-result) {
+  background-color: rgba(176,106,58,.2);
+  color: inherit;
+}
+
+/* ── Tema geçiş animasyonu — tutarlı ── */
+body,
+body .chrome-shell,
+body .view-shell,
+body .bookmark-strip {
+  transition:
+    background-color 380ms var(--illumina-settle),
+    border-color     280ms var(--illumina-settle),
+    color            200ms ease,
+    filter           2000ms ease;
+}
+.tab-card,
+.bookmark-chip,
+.control-button,
+.address-input,
+.site-info-popup,
+#dl-popup,
+#hist-popup {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity, max-width, min-width;
+  transition-duration: 200ms;
+  transition-timing-function: var(--illumina-settle);
+}
+
+/* ── Premium kimlik dokunuşları ── */
+
+/* Aktif sekme — subtle glow ile öne çıkar */
+.tab-card.is-active {
+  box-shadow:
+    0 1px 0 var(--accent) inset,
+    0 2px 8px rgba(0,0,0,.08);
+}
+
+/* Adres çubuğu focus ring daha sıcak */
+.address-input:focus {
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 1px 4px rgba(0,0,0,.06);
+}
+
+/* Toolbar butonlar — aktif olanlar hafif sıcak glow */
+.control-button.is-active,
+.toolbar-icon.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Security dot — kimlik rengi */
+.security-dot {
+  box-shadow: 0 0 0 2px var(--bg);
+  transition: background 300ms ease, transform 200ms var(--illumina-spring), box-shadow 200ms;
+}
+
+/* Brand logo hover */
+.brand-button {
+  transition: opacity 150ms ease, transform 180ms var(--illumina-spring);
+}
+.brand-button:hover {
+  opacity: .75;
+  transform: scale(.93) rotate(-3deg);
+}
+
+/* Yeni sekme butonu — invite gesture */
+.tab-add-button {
+  transition: background 120ms, color 120ms, transform 180ms var(--illumina-spring), opacity 120ms;
+}
+.tab-add-button:hover {
+  transform: scale(1.15) rotate(90deg);
+}
+
+/* ── Download sparkline placeholder ── */
+.dl-popup-speed-graph {
+  height: 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  padding: 4px 0 0;
+}
+.dl-popup-speed-bar {
+  width: 4px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
+  opacity: .7;
+  transition: height 200ms var(--illumina-warmth);
+  min-height: 2px;
+}
+
+/* ── Skeleton shimmer (sayfa yükleme için) ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--panel-soft) 25%,
+    var(--panel)      50%,
+    var(--panel-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+/* ── Focus mode geçişi — daha smooth ── */
+.chrome-shell {
+  transition:
+    transform    300ms var(--illumina-warmth),
+    opacity      250ms ease,
+    height       300ms var(--illumina-warmth);
+}
+.browser-shell.focus-mode .chrome-shell {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Prefers reduced motion — her zaman saygı göster ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

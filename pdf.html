@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Görüntüleyici</title>
+  <link rel="stylesheet" href="page.css" />
+  <style>
+    :root { --pdf-bg: #525659; }
+    body { margin:0; background:var(--pdf-bg); display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+
+    #pdf-toolbar {
+      display:flex; align-items:center; gap:8px; padding:6px 12px;
+      background:var(--panel); border-bottom:1px solid var(--line-mid);
+      flex-shrink:0; flex-wrap:wrap; min-height:44px;
+    }
+    #pdf-toolbar .tb-group { display:flex; align-items:center; gap:4px; }
+    #pdf-toolbar .sep { width:1px; height:20px; background:var(--line-mid); margin:0 4px; }
+    .tb-btn {
+      height:30px; padding:0 10px; border-radius:7px; border:1px solid var(--line-mid);
+      background:var(--panel-strong); color:var(--text); font-size:12px; cursor:pointer;
+      display:flex; align-items:center; gap:4px; transition:background .12s;
+    }
+    .tb-btn:hover { background:var(--line-soft); }
+    .tb-btn:disabled { opacity:.4; cursor:not-allowed; }
+    #page-input {
+      width:46px; height:30px; text-align:center; border:1px solid var(--line-mid);
+      border-radius:7px; background:var(--panel-strong); color:var(--text); font-size:12px;
+    }
+    #page-count { font-size:12px; color:var(--text-2); white-space:nowrap; }
+    #zoom-select {
+      height:30px; padding:0 6px; border:1px solid var(--line-mid); border-radius:7px;
+      background:var(--panel-strong); color:var(--text); font-size:12px; cursor:pointer;
+    }
+    #pdf-title { font-size:13px; font-weight:500; flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--text); }
+
+    #pdf-container {
+      flex:1; overflow:auto; display:flex; flex-direction:column; align-items:center;
+      padding:20px 16px; gap:12px;
+    }
+    .pdf-page-wrap {
+      position:relative; box-shadow:0 4px 16px rgba(0,0,0,.4); background:#fff; flex-shrink:0;
+    }
+    .pdf-page-wrap canvas { display:block; }
+    .pdf-page-num {
+      position:absolute; bottom:-20px; left:50%; transform:translateX(-50%);
+      font-size:10px; color:rgba(255,255,255,.5); white-space:nowrap;
+    }
+
+    #drop-zone {
+      flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:16px; color:var(--text-2);
+    }
+    #drop-zone .drop-icon { font-size:48px; opacity:.4; }
+    #drop-zone h2 { font-size:18px; font-weight:500; color:var(--text); margin:0; }
+    #drop-zone p  { font-size:13px; margin:0; }
+    #drop-zone.dragover { background:var(--accent-soft); }
+    #open-btn { height:36px; padding:0 20px; border-radius:10px; border:none; background:var(--accent); color:#fff; font-size:13px; cursor:pointer; }
+
+    #loading { display:none; align-items:center; justify-content:center; flex:1; flex-direction:column; gap:12px; color:var(--text-2); font-size:13px; }
+    .spinner { width:32px; height:32px; border:3px solid var(--line-mid); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    #error-box { display:none; padding:20px; background:var(--panel); border-radius:12px; color:var(--text-danger,#c0392b); font-size:13px; max-width:400px; text-align:center; }
+  </style>
+</head>
+<body data-theme="mist">
+
+<div id="pdf-toolbar" style="display:none">
+  <span id="pdf-title">—</span>
+  <div class="sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-prev" disabled title="Önceki sayfa">◀</button>
+    <input id="page-input" type="number" min="1" value="1" />
+    <span id="page-count">/ —</span>
+    <button class="tb-btn" id="btn-next" disabled title="Sonraki sayfa">▶</button>
+  </div>
+  <div class="sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-zoom-out" title="Uzaklaştır">−</button>
+    <select id="zoom-select">
+      <option value="0.5">%50</option>
+      <option value="0.75">%75</option>
+      <option value="1" selected>%100</option>
+      <option value="1.25">%125</option>
+      <option value="1.5">%150</option>
+      <option value="2">%200</option>
+      <option value="fit">Genişliğe sığdır</option>
+    </select>
+    <button class="tb-btn" id="btn-zoom-in" title="Yaklaştır">+</button>
+  </div>
+  <div class="sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-rotate" title="Döndür">↻</button>
+    <button class="tb-btn" id="btn-download" title="İndir">İndir</button>
+    <button class="tb-btn" id="btn-print" title="Yazdır">Yazdır</button>
+  </div>
+</div>
+
+<div id="drop-zone">
+  <div class="drop-icon">📄</div>
+  <h2>PDF Görüntüleyici</h2>
+  <p>Bir PDF dosyasını buraya sürükle ya da aç</p>
+  <button id="open-btn" type="button">PDF Seç</button>
+  <input id="file-input" type="file" accept=".pdf,application/pdf" style="display:none" />
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <span>PDF yükleniyor…</span>
+</div>
+
+<div id="error-box"></div>
+<div id="pdf-container" style="display:none"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let pdfDoc = null, currentPage = 1, totalPages = 0;
+let scale = 1, rotation = 0;
+let _pdfBytes = null, _fileName = "";
+let _renderTask = null;
+
+const dropZone    = document.getElementById('drop-zone');
+const toolbar     = document.getElementById('pdf-toolbar');
+const container   = document.getElementById('pdf-container');
+const loading     = document.getElementById('loading');
+const errorBox    = document.getElementById('error-box');
+const pageInput   = document.getElementById('page-input');
+const pageCount   = document.getElementById('page-count');
+const btnPrev     = document.getElementById('btn-prev');
+const btnNext     = document.getElementById('btn-next');
+const btnZoomIn   = document.getElementById('btn-zoom-in');
+const btnZoomOut  = document.getElementById('btn-zoom-out');
+const zoomSelect  = document.getElementById('zoom-select');
+const btnRotate   = document.getElementById('btn-rotate');
+const btnDownload = document.getElementById('btn-download');
+const btnPrint    = document.getElementById('btn-print');
+const pdfTitle    = document.getElementById('pdf-title');
+const fileInput   = document.getElementById('file-input');
+const openBtn     = document.getElementById('open-btn');
+
+function showSection(which) {
+  dropZone.style.display  = which==='drop'   ? 'flex' : 'none';
+  loading.style.display   = which==='loading'? 'flex' : 'none';
+  container.style.display = which==='pdf'    ? 'flex' : 'none';
+  errorBox.style.display  = which==='error'  ? 'block': 'none';
+  toolbar.style.display   = which==='pdf'    ? 'flex' : 'none';
+}
+
+function showError(msg) {
+  errorBox.textContent = '⚠ ' + msg;
+  showSection('error');
+}
+
+async function loadPdf(bytes, name) {
+  showSection('loading');
+  _pdfBytes = bytes;
+  _fileName = name || 'belge.pdf';
+  pdfTitle.textContent = _fileName;
+  try {
+    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+    totalPages = pdfDoc.numPages;
+    currentPage = 1;
+    pageInput.max = totalPages;
+    pageCount.textContent = '/ ' + totalPages;
+    btnPrev.disabled = true;
+    btnNext.disabled = totalPages <= 1;
+    await renderAllPages();
+    showSection('pdf');
+  } catch(e) {
+    showError('PDF açılamadı: ' + e.message);
+  }
+}
+
+async function renderAllPages() {
+  container.innerHTML = '';
+  for (let p = 1; p <= totalPages; p++) {
+    const page = await pdfDoc.getPage(p);
+    const vp   = page.getViewport({ scale: getScale(), rotation });
+    const wrap  = document.createElement('div');
+    wrap.className = 'pdf-page-wrap';
+    wrap.dataset.page = p;
+    wrap.style.width  = vp.width  + 'px';
+    wrap.style.height = vp.height + 'px';
+    const canvas = document.createElement('canvas');
+    canvas.width  = vp.width;
+    canvas.height = vp.height;
+    wrap.appendChild(canvas);
+    const num = document.createElement('span');
+    num.className = 'pdf-page-num';
+    num.textContent = p + ' / ' + totalPages;
+    wrap.appendChild(num);
+    container.appendChild(wrap);
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+  }
+}
+
+function getScale() {
+  const val = zoomSelect.value;
+  if (val === 'fit') {
+    const cw = container.clientWidth - 40;
+    return cw / 595; // A4 genişliği pdf birim
+  }
+  return parseFloat(val) || 1;
+}
+
+function scrollToPage(n) {
+  const wrap = container.querySelector(`[data-page="${n}"]`);
+  if (wrap) wrap.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// Scroll ile aktif sayfayı güncelle
+const observer = new IntersectionObserver(entries => {
+  let best = null, bestRatio = 0;
+  entries.forEach(e => { if (e.intersectionRatio > bestRatio) { bestRatio = e.intersectionRatio; best = e.target; } });
+  if (best) {
+    const p = parseInt(best.dataset.page);
+    if (p && p !== currentPage) {
+      currentPage = p;
+      pageInput.value = p;
+      btnPrev.disabled = p <= 1;
+      btnNext.disabled = p >= totalPages;
+    }
+  }
+}, { root: container, threshold: [0.1, 0.5, 0.9] });
+
+function reObserve() {
+  observer.disconnect();
+  container.querySelectorAll('.pdf-page-wrap').forEach(w => observer.observe(w));
+}
+
+async function reRender() {
+  if (!pdfDoc) return;
+  await renderAllPages();
+  reObserve();
+}
+
+btnPrev.addEventListener('click', () => { if (currentPage > 1) scrollToPage(currentPage - 1); });
+btnNext.addEventListener('click', () => { if (currentPage < totalPages) scrollToPage(currentPage + 1); });
+
+pageInput.addEventListener('change', () => {
+  const n = parseInt(pageInput.value);
+  if (n >= 1 && n <= totalPages) scrollToPage(n);
+  else pageInput.value = currentPage;
+});
+
+zoomSelect.addEventListener('change', () => { scale = getScale(); reRender(); });
+btnZoomIn.addEventListener('click', () => {
+  const steps = [0.5,0.75,1,1.25,1.5,2,3];
+  const cur = parseFloat(zoomSelect.value) || 1;
+  const next = steps.find(s => s > cur);
+  if (next) { zoomSelect.value = next; reRender(); }
+});
+btnZoomOut.addEventListener('click', () => {
+  const steps = [0.5,0.75,1,1.25,1.5,2,3];
+  const cur = parseFloat(zoomSelect.value) || 1;
+  const prev = [...steps].reverse().find(s => s < cur);
+  if (prev) { zoomSelect.value = prev; reRender(); }
+});
+
+btnRotate.addEventListener('click', () => { rotation = (rotation + 90) % 360; reRender(); });
+
+btnDownload.addEventListener('click', () => {
+  if (!_pdfBytes) return;
+  const blob = new Blob([_pdfBytes], { type:'application/pdf' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = _fileName;
+  a.click();
+});
+
+btnPrint.addEventListener('click', () => { window.print(); });
+
+// Dosya aç
+openBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  f.arrayBuffer().then(buf => loadPdf(new Uint8Array(buf), f.name));
+});
+
+// Sürükle-bırak
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && (f.type==='application/pdf' || f.name.endsWith('.pdf'))) {
+    f.arrayBuffer().then(buf => loadPdf(new Uint8Array(buf), f.name));
+  }
+});
+
+// URL'den PDF yükle (tarayıcı içinden açıldığında)
+window.browserPage?.onState(state => {
+  document.body.dataset.theme = state.theme || 'mist';
+  // Eğer URL parametresi varsa yükle
+  const params = new URLSearchParams(window.location.search);
+  const pdfUrl = params.get('url');
+  if (pdfUrl) {
+    showSection('loading');
+    fetch(pdfUrl)
+      .then(r => r.arrayBuffer())
+      .then(buf => loadPdf(new Uint8Array(buf), decodeURIComponent(pdfUrl.split('/').pop())))
+      .catch(e => showError('PDF indirilemedi: ' + e.message));
+  }
+});
+</script>
+</body>
+</html>

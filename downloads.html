@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; media-src 'self' blob:; frame-src 'none'; object-src 'none';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>İndirmeler</title>
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body data-theme="mist">
+    <main class="page-shell narrow-shell">
+      <section class="hero-panel compact">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">İndirmeler</span>
+            <h1>Son dosyaların</h1>
+          </div>
+          <button id="clear-downloads-button" class="soft-button danger" type="button">Listeyi temizle</button>
+        </div>
+        <p class="hero-text">İndirdiğin dosyaları buradan açabilir ya da klasörde gösterebilirsin.</p>
+      </section>
+      <section class="content-panel">
+        <div id="downloads-items" class="download-list"></div>
+      </section>
+    </main>
+    <script>
+      const downloadsItems = document.getElementById("downloads-items");
+      const clearBtn       = document.getElementById("clear-downloads-button");
+      function esc(v){ return String(v||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
+      function fmtBytes(b) {
+        if (!b) return "0 B";
+        const u = ["B","KB","MB","GB"], i = Math.floor(Math.log(b)/Math.log(1024));
+        return `${(b/Math.pow(1024,i)).toFixed(1)} ${u[i]}`;
+      }
+      function stateBadge(s) {
+        const m = { completed:["Tamamlandı","completed"], interrupted:["Kesildi","interrupted"], progressing:["İndiriliyor",""], cancelled:["İptal","interrupted"] };
+        const [label, cls] = m[s] || [s, ""];
+        return `<span class="download-state-badge ${cls}">${label}</span>`;
+      }
+      function render(items) {
+        if (!items.length) { downloadsItems.innerHTML = '<p class="empty-state">Henüz indirme yok.</p>'; return; }
+        downloadsItems.innerHTML = items.map(item => {
+          const pct = item.totalBytes > 0 ? Math.min(100, Math.round(item.receivedBytes / item.totalBytes * 100)) : null;
+          let speedStr = "";
+          if (item.state === "progressing" && item.startedAt) {
+             const elapsedSeconds = (Date.now() - new Date(item.startedAt).getTime()) / 1000;
+             if (elapsedSeconds > 1 && item.receivedBytes > 0) {
+                const speedBytes = item.receivedBytes / elapsedSeconds;
+                speedStr = ` — ${fmtBytes(speedBytes)}/s`;
+             }
+          }
+          const prog = (item.state === "progressing" && pct !== null) ? `<div class="download-progress"><div class="download-progress-fill" style="width:${pct}%"></div></div>` : "";
+          const size = item.totalBytes > 0 ? `${fmtBytes(item.receivedBytes)} / ${fmtBytes(item.totalBytes)}${pct!==null?` · ${pct}%`:""}${speedStr}` : "";
+          return `
+            <div class="download-row">
+              <div class="download-copy">
+                <strong>${esc(item.filename)}</strong>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
+                  ${stateBadge(item.state)}
+                  ${size ? `<span style="font-size:11px;color:var(--text-2)">${esc(size)}</span>` : ""}
+                </div>
+                ${prog}
+              </div>
+              <div class="download-actions">
+                ${item.state==="completed"?`<button class="soft-button" type="button" data-open="${esc(item.id)}">Aç</button>`:""}
+                ${item.state==="completed"?`<button class="soft-button" type="button" data-show="${esc(item.id)}">Klasör</button>`:""}
+              </div>
+            </div>
+          `;
+        }).join("");
+        downloadsItems.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => window.browserPage.send("open-download", { id: b.dataset.open })));
+        downloadsItems.querySelectorAll("[data-show]").forEach(b => b.addEventListener("click", () => window.browserPage.send("show-download", { id: b.dataset.show })));
+      }
+      clearBtn.addEventListener("click", () => window.browserPage.send("clear-downloads"));
+      window.browserPage.onState(state => { document.body.dataset.theme = state.theme || "mist"; render(state.downloads || []); });
+    </script>
+  </body>
+</html>
